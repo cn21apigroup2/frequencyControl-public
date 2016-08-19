@@ -1,4 +1,4 @@
-package com.cn.frequencyControl_public;
+package com.cn21.frequencyControl_public;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
