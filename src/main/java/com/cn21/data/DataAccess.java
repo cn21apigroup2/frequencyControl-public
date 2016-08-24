@@ -44,7 +44,7 @@ public interface DataAccess {
 	 * @param parameters
 	 * @return interface_id return -1 if not exist
 	 */
-	public int getApiInterfaceId(String url,Map<String,String> parameters);
+	public int getApiInterfaceId(String url,Map<String,String[]> parameters);
 	
 	/**
 	 * 根据interface_id得到限制次数

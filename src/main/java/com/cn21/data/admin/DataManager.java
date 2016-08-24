@@ -7,7 +7,7 @@ import com.cn21.module.Blacklist;
 
 public class DataManager implements DataAccess {
 	
-	public DataManager(){
+	private DataManager(){
 		
 	}
 	
@@ -35,7 +35,7 @@ public class DataManager implements DataAccess {
 
 	}
 
-	public int getApiInterfaceId(String url, Map<String, String> parameters) {
+	public int getApiInterfaceId(String url, Map<String, String[]> parameters) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -63,6 +63,14 @@ public class DataManager implements DataAccess {
 	public int addTimesByIp(int interface_id, String ip) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+	public static DataManager getInstance(){
+		return inner.instance;
+	}
+	
+	private static class inner{
+		private static DataManager instance=new DataManager();
 	}
 
 }

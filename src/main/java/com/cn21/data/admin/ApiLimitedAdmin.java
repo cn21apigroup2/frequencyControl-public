@@ -25,7 +25,7 @@ public class ApiLimitedAdmin {
 	 * @param params
 	 * @return
 	 */
-	public int getInterfaceId(String url,Map<String,String> params){
+	public int getInterfaceId(String url,Map<String,String[]> params){
 		int id=-1;
 		int count=-1;
 		int times=0;
@@ -49,7 +49,7 @@ public class ApiLimitedAdmin {
 	 * @param params
 	 * @return
 	 */
-	private int matchCount(List<Parameter> parameters, Map<String, String> params) {
+	private int matchCount(List<Parameter> parameters, Map<String, String[]> params) {
 		if(parameters==null||params==null) return 0;
 		int count=0;
 		for(int i=0;i<parameters.size();++i){
