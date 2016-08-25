@@ -20,12 +20,12 @@
 	</properties>
 
 	<dependencies>
-	<dependency>
+		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>${jackson.mapper.asl.version}</version>
 		</dependency>
-	<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+		<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
@@ -50,12 +50,5 @@
 			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/net.markenwerk/utils-lrucache -->
-		<dependency>
-			<groupId>net.markenwerk</groupId>
-			<artifactId>utils-lrucache</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-
 	</dependencies>
 </project>
