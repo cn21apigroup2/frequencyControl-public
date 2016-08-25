@@ -42,6 +42,16 @@ public class ApiLimitedAdmin {
 		}
 		return id;
 	}
+	
+	public int getLimitedTimes(int interfaceId){
+		int times=-1;
+		for(int i=0;i<apis.size();++i){
+			InterfaceControl item=apis.get(i);
+			if(item.getInterface_id()==interfaceId)
+				return item.getFrequency();
+		}
+		return times;
+	}
 
 	/**
 	 * 判断 参数 是否满足限制中规定的 键值对

@@ -21,7 +21,7 @@ public abstract class Cache<K,V> {
 		
 		public void onEntryRemove(K key, V oldValue, V newValue);
 		
-		public void onEntryEvicted(K key, V oldValue, V newValue);
+		public V onEntryEvicted(K key, V oldValue, V newValue);
 		
 		public V onEntryCreate(K key);
 	}
