@@ -30,6 +30,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+import com.cn21.frequencyControl_public.Blacklist;
 import com.cn21.frequencyControl_public.Interfac;
 
 public class HttpUtil {
@@ -138,11 +139,33 @@ public class HttpUtil {
 		}
 		return interfaces;
 	}
+	/**
+	 * 从服务器中拉取数据
+	 * @param url
+	 * @param method
+	 * @return
+	 * @throws IOException
+	 */
+	public static List<Blacklist> getFromServer1(String url, String method)
+			throws IOException {
+		Map<String, String> map = new HashMap<String, String>();
+		List<Blacklist> Blacklists=new ArrayList<Blacklist>();
+		HttpClient client = getHttpClient();
+		HttpUriRequest post = getRequestMethod(map, url, method);
+		HttpResponse response = client.execute(post);
+
+		if (response.getStatusLine().getStatusCode() == 200) {
+			HttpEntity entity = response.getEntity();
+			String message = EntityUtils.toString(entity, "utf-8");
+			Blacklists = Blacklist.parse(message);
+		}
+		return Blacklists;
+	}
 
 	public static void main(String[] args) {
-		String url=IP+":"+PORT+"/interface/pull/1/2";
+		String url=IP+":"+PORT+"/FrequencyControl/blacklist/pull/weqeqweq";
 		try {
-			System.out.println(getFromServer(url, "get"));
+			System.out.println(getFromServer1(url, "get"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
