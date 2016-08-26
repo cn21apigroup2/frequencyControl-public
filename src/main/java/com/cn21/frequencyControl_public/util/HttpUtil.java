@@ -30,7 +30,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import com.cn21.frequencyControl_public.InterfaceControl;
+import com.cn21.frequencyControl_public.Interfac;
 
 public class HttpUtil {
 
@@ -123,10 +123,10 @@ public class HttpUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static List<InterfaceControl> getFromServer(String url, String method)
+	public static List<Interfac> getFromServer(String url, String method)
 			throws IOException {
 		Map<String, String> map = new HashMap<String, String>();
-		List<InterfaceControl> interfaces=new ArrayList<InterfaceControl>();
+		List<Interfac> interfaces=new ArrayList<Interfac>();
 		HttpClient client = getHttpClient();
 		HttpUriRequest post = getRequestMethod(map, url, method);
 		HttpResponse response = client.execute(post);
@@ -134,7 +134,7 @@ public class HttpUtil {
 		if (response.getStatusLine().getStatusCode() == 200) {
 			HttpEntity entity = response.getEntity();
 			String message = EntityUtils.toString(entity, "utf-8");
-			interfaces = InterfaceControl.parse(message);
+			interfaces = Interfac.parse(message);
 		}
 		return interfaces;
 	}

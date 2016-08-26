@@ -1,11 +1,3 @@
-/**
- *  @Title: InterfaceConTrole.java 
- *  @Package com.cn21.FrequencyControl.module 
- *  @Description: TODO(用一句话描述该文件做什么) 
- *  @author chenxiaofeng
- *  @date 2016年8月22日 下午2:28:46 
- *  @version V1.0 
- */
 package com.cn21.frequencyControl_public;
 
 import java.io.IOException;
@@ -18,34 +10,16 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.alibaba.fastjson.JSONArray;
 
-/**
- * @author chenxiaofeng
- * @date 2016年8月22日
- */
-public class InterfaceControl {
+public class Interfac {
+    
 	private long interface_id;
-	private long app_id;
-	private String api_name;
-	private int frequency;
-	private int timeout;
-	private char unit;
-	private int can_loan;
-	private int quota;
-	private int deleted;
-	private List<Parameter> parameters;
-	
-	/**
-	 * @return the paremeters
-	 */
-	public List<Parameter> getParameters() {
-		return parameters;
-	}
-	/**
-	 * @param paremeters the paremeters to set
-	 */
-	public void setParameters(List<Parameter> parameters) {
-		this.parameters = parameters;
-	}
+    private long app_id;
+    private String api_name;
+    private int frequency;
+    private int timeout;
+    private char unit;
+    private short deleted;
+    private List<Parameter> parameters;
 	/**
 	 * @return the interface_id
 	 */
@@ -119,53 +93,41 @@ public class InterfaceControl {
 		this.unit = unit;
 	}
 	/**
-	 * @return the can_loan
-	 */
-	public int getCan_loan() {
-		return can_loan;
-	}
-	/**
-	 * @param can_loan the can_loan to set
-	 */
-	public void setCan_loan(int can_loan) {
-		this.can_loan = can_loan;
-	}
-	/**
-	 * @return the quota
-	 */
-	public int getQuota() {
-		return quota;
-	}
-	/**
-	 * @param quota the quota to set
-	 */
-	public void setQuota(int quota) {
-		this.quota = quota;
-	}
-	/**
 	 * @return the deleted
 	 */
-	public int getDeleted() {
+	public short getDeleted() {
 		return deleted;
 	}
 	/**
 	 * @param deleted the deleted to set
 	 */
-	public void setDeleted(int deleted) {
+	public void setDeleted(short deleted) {
 		this.deleted = deleted;
+	}
+	/**
+	 * @return the parameters
+	 */
+	public List<Parameter> getParameters() {
+		return parameters;
+	}
+	/**
+	 * @param parameters the parameters to set
+	 */
+	public void setParameters(List<Parameter> parameters) {
+		this.parameters = parameters;
 	}
 	/**
 	 * 把jsonArray字符串转化出pojo
 	 * @param message
 	 * @return
 	 */
-	public static List<InterfaceControl> parse(String message) {
-		List<InterfaceControl> result=new ArrayList<InterfaceControl>();
+	public static List<Interfac> parse(String message) {
+		List<Interfac> result=new ArrayList<Interfac>();
 		JSONArray parseArray = JSONArray.parseArray(message);
 		ObjectMapper objectMapper = new ObjectMapper();
 		for(int i=0;i<parseArray.size();i++){
 			try {
-				result.add(objectMapper.readValue(parseArray.getString(i), InterfaceControl.class));
+				result.add(objectMapper.readValue(parseArray.getString(i), Interfac.class));
 			} catch (JsonParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -179,5 +141,4 @@ public class InterfaceControl {
 		}
 		return result;
 	}
-	
 }
