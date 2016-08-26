@@ -9,6 +9,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 public class Interfac {
     
@@ -121,9 +122,34 @@ public class Interfac {
 	 * @param message
 	 * @return
 	 */
-	public static List<Interfac> parse(String message) {
+	public static Interfac parseOverall(String message) {
+		Interfac result=null;
+		JSONObject json = (JSONObject) JSONObject.parse(message);
+		ObjectMapper objectMapper = new ObjectMapper();
+			try {
+				result=objectMapper.readValue(json.getString("overallControl"), Interfac.class);
+			} catch (JsonParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return result;
+	}
+	
+	/**
+	 * 把jsonArray字符串转化出pojo
+	 * @param message
+	 * @return
+	 */
+	public static List<Interfac> parseCommon(String message) {
 		List<Interfac> result=new ArrayList<Interfac>();
-		JSONArray parseArray = JSONArray.parseArray(message);
+		JSONObject json = (JSONObject) JSONObject.parse(message);
+		JSONArray parseArray = JSONArray.parseArray(json.getString("interfaces"));
 		ObjectMapper objectMapper = new ObjectMapper();
 		for(int i=0;i<parseArray.size();i++){
 			try {

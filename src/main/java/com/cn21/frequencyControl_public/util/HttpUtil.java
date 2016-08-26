@@ -127,6 +127,7 @@ public class HttpUtil {
 	public static List<Interfac> getFromServer(String url, String method)
 			throws IOException {
 		Map<String, String> map = new HashMap<String, String>();
+		Interfac overallControl=null;
 		List<Interfac> interfaces=new ArrayList<Interfac>();
 		HttpClient client = getHttpClient();
 		HttpUriRequest post = getRequestMethod(map, url, method);
@@ -135,7 +136,8 @@ public class HttpUtil {
 		if (response.getStatusLine().getStatusCode() == 200) {
 			HttpEntity entity = response.getEntity();
 			String message = EntityUtils.toString(entity, "utf-8");
-			interfaces = Interfac.parse(message);
+			overallControl = Interfac.parseOverall(message);
+			interfaces = Interfac.parseCommon(message);
 		}
 		return interfaces;
 	}
