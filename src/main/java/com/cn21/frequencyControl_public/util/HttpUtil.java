@@ -126,7 +126,7 @@ public class HttpUtil {
 	 */
 	public static Map<String,List<Interfac>> getFromServer(String appKey)
 			throws IOException {
-		String url=IP+":"+PORT+"/FrequencyControl/interface/"+appKey;
+		String url=IP+":"+PORT+"/FrequencyControl/interface/pull/"+appKey;
 		HashMap<String, List<Interfac>> result = new HashMap<String,List<Interfac>>();
 		Map<String, String> map = new HashMap<String, String>();
 		Interfac overallControl=null;
@@ -154,12 +154,13 @@ public class HttpUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static List<Blacklist> getFromServer1(String url, String method)
+	public static List<Blacklist> getBlackListFromServer(String appKey)
 			throws IOException {
+		String url=IP+":"+PORT+"/FrequencyControl/blacklist/pull/"+appKey;
 		Map<String, String> map = new HashMap<String, String>();
 		List<Blacklist> Blacklists=new ArrayList<Blacklist>();
 		HttpClient client = getHttpClient();
-		HttpUriRequest post = getRequestMethod(map, url, method);
+		HttpUriRequest post = getRequestMethod(map, url, "post");
 		HttpResponse response = client.execute(post);
 
 		if (response.getStatusLine().getStatusCode() == 200) {
