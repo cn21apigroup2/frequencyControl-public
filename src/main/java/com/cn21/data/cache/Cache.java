@@ -1,5 +1,7 @@
 package com.cn21.data.cache;
 
+import java.util.Map;
+
 public abstract class Cache<K,V> {
 	protected CacheListener listener=null;
 	
@@ -8,6 +10,8 @@ public abstract class Cache<K,V> {
 	abstract public V set(K key,V value);
 	
 	abstract public V remove(K key);
+	
+	abstract public Map<K,V> getData();
 	
 	public CacheListener getListener() {
 		return listener;

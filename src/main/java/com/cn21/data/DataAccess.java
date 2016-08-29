@@ -85,4 +85,9 @@ public interface DataAccess {
 	 */
 	public int addTimesByIp(int interface_id,String ip);
 	
+	/**
+	 * 容器关闭时调用，进行数据整理
+	 */
+	public void onEnd();
+	
 }

@@ -2,6 +2,10 @@ package com.cn21.data.admin;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 import com.cn21.module.InterfaceControl;
 import com.cn21.module.Parameter;
@@ -14,9 +18,15 @@ import com.cn21.module.Parameter;
 public class ApiLimitedAdmin {
 
 	private List<InterfaceControl> apis;
+	private ReentrantReadWriteLock lock;
+	private WriteLock wlock;
+	private ReadLock rlock;
 	
 	public ApiLimitedAdmin(List<InterfaceControl> apis){
 		this.apis=apis;
+		lock=new ReentrantReadWriteLock();
+		wlock=lock.writeLock();
+		rlock=lock.readLock();
 	}
 	
 	/**
@@ -29,6 +39,7 @@ public class ApiLimitedAdmin {
 		int id=-1;
 		int count=-1;
 		int times=0;
+		rlock.lock();
 		for(int i=0;i<apis.size();++i){
 			InterfaceControl item=apis.get(i);
 			if(url.equals(item.getApi_name())){
@@ -40,17 +51,42 @@ public class ApiLimitedAdmin {
 				}
 			}
 		}
+		rlock.unlock();
 		return id;
 	}
 	
+	/**
+	 * 获取次数
+	 * @param interfaceId
+	 * @return
+	 */
 	public int getLimitedTimes(int interfaceId){
 		int times=-1;
+		rlock.lock();
 		for(int i=0;i<apis.size();++i){
 			InterfaceControl item=apis.get(i);
 			if(item.getInterface_id()==interfaceId)
 				return item.getFrequency();
 		}
+		rlock.unlock();
 		return times;
+	}
+	
+	/**
+	 * 获取时限
+	 * @param interfaceId
+	 * @return
+	 */
+	public int getTimeout(int interfaceId){
+		int time=-1;
+		rlock.lock();
+		for(int i=0;i<apis.size();++i){
+			InterfaceControl item=apis.get(i);
+			if(item.getInterface_id()==interfaceId)
+				return item.getTimeoutOfSeconds();
+		}
+		rlock.unlock();
+		return time;
 	}
 
 	/**
@@ -71,13 +107,24 @@ public class ApiLimitedAdmin {
 		}
 		return count;
 	}
+	
+	public void refreshData(List<InterfaceControl> newList){
+		try {
+			wlock.tryLock(120, TimeUnit.SECONDS);
+			apis=newList;
+			wlock.unlock();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	public List<InterfaceControl> getApis() {
 		return apis;
 	}
 
-	public synchronized void setApis(List<InterfaceControl> apis) {
-		this.apis = apis;
+	public void setApis(List<InterfaceControl> apis) {
+		refreshData(apis);
 	}
 	
 	

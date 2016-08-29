@@ -4,24 +4,27 @@ import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
+import java.util.Map;
 import java.util.jar.JarFile;
+
+import com.cn21.frequencyControl_public.util.sizeof.ClassIntrospector;
 
 public class ILruCache<K,V> extends Cache<K,V>{
 	private LruCache<K,V> lruCache;
-	private int entrySize=1;
 	
 	public ILruCache(int maxSize){
-		this(maxSize,1);
-	}
-	
-	public ILruCache(int maxSize,int entrySize){
-		final int size=entrySize;
 		lruCache=new LruCache<K, V>(maxSize){
 			
 			@Override
-			protected int sizeOf(K key, V value) {
+			protected int sizeOf(K key, V value){
 				// TODO Auto-generated method stub
-				return size;
+				try {
+					return  (int)(ci.introspect(key).getDeepSize()+ci.introspect(value).getDeepSize());
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return super.sizeOf(key, value);
 			}
 			
 			@Override
@@ -62,6 +65,12 @@ public class ILruCache<K,V> extends Cache<K,V>{
 	public V remove(K key) {
 		// TODO Auto-generated method stub
 		return lruCache.remove(key);
+	}
+
+	@Override
+	public Map<K, V> getData() {
+		// TODO Auto-generated method stub
+		return lruCache.snapshot();
 	}
 
 }

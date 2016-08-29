@@ -30,7 +30,8 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import com.cn21.frequencyControl_public.InterfaceControl;
+import com.cn21.module.Blacklist;
+import com.cn21.module.InterfaceControl;
 
 public class HttpUtil {
 
@@ -123,8 +124,10 @@ public class HttpUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static List<InterfaceControl> getFromServer(String url, String method)
+	public static List<InterfaceControl> getInterfaces()
 			throws IOException {
+		String url=IP+":"+PORT+"/interface/pull/1/2";
+		String method="get";
 		Map<String, String> map = new HashMap<String, String>();
 		List<InterfaceControl> interfaces=new ArrayList<InterfaceControl>();
 		HttpClient client = getHttpClient();
@@ -138,14 +141,39 @@ public class HttpUtil {
 		}
 		return interfaces;
 	}
-
-	public static void main(String[] args) {
-		String url=IP+":"+PORT+"/interface/pull/1/2";
-		try {
-			System.out.println(getFromServer(url, "get"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	
+	public static List<Blacklist> getBlacklists(){
+		return new ArrayList<Blacklist>();
 	}
+	
+	public static List<InterfaceControl> getInterfacesTest(){
+		List<InterfaceControl> interfaces=new ArrayList<InterfaceControl>();
+		InterfaceControl ic=new InterfaceControl();
+		ic.setApi_name("/user/add");
+		ic.setInterface_id(1);
+		ic.setFrequency(100);
+		ic.setTimeout(1);
+		ic.setUnit('h');
+		interfaces.add(ic);
+		ic=new InterfaceControl();
+		ic.setApi_name("/user/list");
+		ic.setInterface_id(2);
+		ic.setFrequency(100);
+		ic.setTimeout(100);
+		ic.setUnit('s');
+		interfaces.add(ic);
+		return interfaces;
+	}
+	
+	public static List<Blacklist> getBlacklistsTest(){
+		List<Blacklist> blacklists=new ArrayList<Blacklist>();
+		Blacklist b=new Blacklist();
+		b.setLimitedIp("123.121.121.22");
+		blacklists.add(b);
+		b=new Blacklist();
+		b.setUsername("xiao");
+		blacklists.add(b);
+		return blacklists;
+	}
+
 }
