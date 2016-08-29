@@ -18,6 +18,8 @@ package com.cn21.data.cache;
  
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import com.cn21.frequencyControl_public.util.sizeof.ClassIntrospector;
  
 /**
  * Static library version of {@link android.util.LruCache}. Used to write apps
@@ -27,6 +29,8 @@ import java.util.Map;
  * overview.
  */
 public class LruCache<K, V> {
+	protected ClassIntrospector ci;
+	
     private final LinkedHashMap<K, V> map;
  
     /** Size of this cache in units. Not necessarily the number of elements. */
@@ -50,6 +54,7 @@ public class LruCache<K, V> {
         }
         this.maxSize = maxSize;
         this.map = new LinkedHashMap<K, V>(0, 0.75f, true);
+        this.ci=new ClassIntrospector();
     }
  
     /**

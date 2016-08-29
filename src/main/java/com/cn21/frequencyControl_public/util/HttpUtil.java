@@ -30,8 +30,8 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import com.cn21.frequencyControl_public.Blacklist;
-import com.cn21.frequencyControl_public.Interfac;
+import com.cn21.module.Blacklist;
+import com.cn21.module.InterfaceControl;
 
 public class HttpUtil {
 
@@ -124,13 +124,13 @@ public class HttpUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static Map<String,List<Interfac>> getFromServer(String appKey)
+	public static Map<String,List<InterfaceControl>> getFromServer(String appKey)
 			throws IOException {
 		String url=IP+":"+PORT+"/FrequencyControl/interface/pull/"+appKey;
-		HashMap<String, List<Interfac>> result = new HashMap<String,List<Interfac>>();
+		HashMap<String, List<InterfaceControl>> result = new HashMap<String,List<InterfaceControl>>();
 		Map<String, String> map = new HashMap<String, String>();
-		Interfac overallControl=null;
-		List<Interfac> interfaces=new ArrayList<Interfac>();
+		InterfaceControl overallControl=null;
+		List<InterfaceControl> interfaces=new ArrayList<InterfaceControl>();
 		HttpClient client = getHttpClient();
 		HttpUriRequest post = getRequestMethod(map, url, "post");
 		HttpResponse response = client.execute(post);
@@ -138,15 +138,16 @@ public class HttpUtil {
 		if (response.getStatusLine().getStatusCode() == 200) {
 			HttpEntity entity = response.getEntity();
 			String message = EntityUtils.toString(entity, "utf-8");
-			overallControl = Interfac.parseOverall(message);
-			interfaces = Interfac.parseCommon(message);
-			List<Interfac> oc = new ArrayList<Interfac>();
+			overallControl = InterfaceControl.parseOverall(message);
+			interfaces = InterfaceControl.parseCommon(message);
+			List<InterfaceControl> oc = new ArrayList<InterfaceControl>();
 			oc.add(overallControl);
 			result.put("overallControl", oc);
 			result.put("interfaces", interfaces);
 		}
 		return result;
 	}
+
 	/**
 	 * 从服务器中拉取数据
 	 * @param url
@@ -169,6 +170,36 @@ public class HttpUtil {
 			Blacklists = Blacklist.parse(message);
 		}
 		return Blacklists;
+	}
+	
+	public static List<InterfaceControl> getInterfacesTest(){
+		List<InterfaceControl> interfaces=new ArrayList<InterfaceControl>();
+		InterfaceControl ic=new InterfaceControl();
+		ic.setApi_name("/user/add");
+		ic.setInterface_id(1);
+		ic.setFrequency(100);
+		ic.setTimeout(1);
+		ic.setUnit('h');
+		interfaces.add(ic);
+		ic=new InterfaceControl();
+		ic.setApi_name("/user/list");
+		ic.setInterface_id(2);
+		ic.setFrequency(100);
+		ic.setTimeout(100);
+		ic.setUnit('s');
+		interfaces.add(ic);
+		return interfaces;
+	}
+	
+	public static List<Blacklist> getBlacklistsTest(){
+		List<Blacklist> blacklists=new ArrayList<Blacklist>();
+		Blacklist b=new Blacklist();
+		b.setLimitedIp("123.121.121.22");
+		blacklists.add(b);
+		b=new Blacklist();
+		b.setUsername("xiao");
+		blacklists.add(b);
+		return blacklists;
 	}
 
 }

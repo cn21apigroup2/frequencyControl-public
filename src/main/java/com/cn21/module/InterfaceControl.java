@@ -8,8 +8,16 @@
  */
 package com.cn21.module;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * @author chenxiaofeng
@@ -26,6 +34,106 @@ public class InterfaceControl {
 	private int quota;
 	private int deleted;
 	private List<Parameter> parameters;
+	private int timeoutTemp=-1;
+	
+	public int getTimeoutOfSeconds(){
+		if(timeoutTemp!=-1)
+			return timeoutTemp;
+		int time=0;
+		switch(unit){
+		case 's':
+			time=timeout;
+			break;
+		case 'm':
+			time=timeout*60;
+			break;
+		case 'h':
+			time=timeout*60*60;
+			break;
+		case 'd':
+			time=timeout*24*60*60;
+			break;
+		}
+		timeoutTemp=time;
+		return timeoutTemp;
+	}
+	
+	/**
+	 * 把jsonArray字符串转化出pojo
+	 * @param message
+	 * @return
+	 */
+	public static InterfaceControl parseOverall(String message) {
+		InterfaceControl result=null;
+		JSONObject json = (JSONObject) JSONObject.parse(message);
+		ObjectMapper objectMapper = new ObjectMapper();
+			try {
+				result=objectMapper.readValue(json.getString("overallControl"), InterfaceControl.class);
+			} catch (JsonParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return result;
+	}
+	
+	/**
+	 * 把jsonArray字符串转化出pojo
+	 * @param message
+	 * @return
+	 */
+	public static List<InterfaceControl> parseCommon(String message) {
+		List<InterfaceControl> result=new ArrayList<InterfaceControl>();
+		JSONObject json = (JSONObject) JSONObject.parse(message);
+		JSONArray parseArray = JSONArray.parseArray(json.getString("interfaces"));
+		ObjectMapper objectMapper = new ObjectMapper();
+		for(int i=0;i<parseArray.size();i++){
+			try {
+				result.add(objectMapper.readValue(parseArray.getString(i), InterfaceControl.class));
+			} catch (JsonParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * 把jsonArray字符串转化出pojo
+	 * @param message
+	 * @return
+	 */
+	public static List<InterfaceControl> parse(String message) {
+		List<InterfaceControl> result=new ArrayList<InterfaceControl>();
+		JSONArray parseArray = JSONArray.parseArray(message);
+		ObjectMapper objectMapper = new ObjectMapper();
+		for(int i=0;i<parseArray.size();i++){
+			try {
+				result.add(objectMapper.readValue(parseArray.getString(i), InterfaceControl.class));
+			} catch (JsonParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
 	
 	/**
 	 * @return the paremeters

@@ -3,6 +3,7 @@ package com.cn21.data;
 import java.util.Map;
 
 import com.cn21.module.Blacklist;
+import com.cn21.module.InterfaceControl;
 
 /**
  * 数据访问，控制接口
@@ -54,6 +55,12 @@ public interface DataAccess {
 	public int getLimitedTimesById(int interface_id);
 	
 	/**
+	 * 全局访问的接口信息
+	 * @return 全局访问的次数
+	 */
+	public InterfaceControl getGlobalLimited();
+	
+	/**
 	 * 根据username得到当前次数
 	 * @param interface_id
 	 * @param username
@@ -84,5 +91,10 @@ public interface DataAccess {
 	 * @return
 	 */
 	public int addTimesByIp(int interface_id,String ip);
+	
+	/**
+	 * 容器关闭时调用，进行数据整理
+	 */
+	public void onEnd();
 	
 }
