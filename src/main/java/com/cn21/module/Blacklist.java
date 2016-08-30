@@ -25,7 +25,7 @@ public class Blacklist {
     private Date firDate;
     private Date secDate;
     private Date thrDate;
-    private Date absoulteDate;
+    private Date absoluteDate;
     private short state;
 
     public int getBlacklistId() {
@@ -100,12 +100,12 @@ public class Blacklist {
         this.thrDate = thrDate;
     }
 
-    public Date getAbsoulteDate() {
-        return absoulteDate;
+    public Date getAbsoluteDate() {
+        return absoluteDate;
     }
 
-    public void setAbsoulteDate(Date absoulteDate) {
-        this.absoulteDate = absoulteDate;
+    public void setAbsoluteDate(Date absoluteDate) {
+        this.absoluteDate = absoluteDate;
     }
 
     public short getState() {
