@@ -9,6 +9,8 @@
 package com.cn21.frequencyControl_public.util;
 
 import java.io.IOException;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +32,8 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.cn21.module.Blacklist;
 import com.cn21.module.InterfaceControl;
 
@@ -119,8 +123,7 @@ public class HttpUtil {
 
 	/**
 	 * 从服务器中拉取数据
-	 * @param url
-	 * @param method
+	 * @param appKey
 	 * @return
 	 * @throws IOException
 	 */
@@ -150,15 +153,15 @@ public class HttpUtil {
 
 	/**
 	 * 从服务器中拉取数据
-	 * @param url
-	 * @param method
+	 * @param appKey
 	 * @return
 	 * @throws IOException
 	 */
 	public static List<Blacklist> getBlackListFromServer(String appKey)
 			throws IOException {
-		String url=IP+":"+PORT+"/FrequencyControl/blacklist/pull/"+appKey;
+		String url=IP+":"+PORT+"/blacklist/pull";
 		Map<String, String> map = new HashMap<String, String>();
+		map.put("appKey", appKey);
 		List<Blacklist> Blacklists=new ArrayList<Blacklist>();
 		HttpClient client = getHttpClient();
 		HttpUriRequest post = getRequestMethod(map, url, "post");
@@ -172,6 +175,53 @@ public class HttpUtil {
 		return Blacklists;
 	}
 	
+	/**
+	 * 向服务器更新黑名单数据
+	 * @param appKey
+	 * @param blacklists
+	 * @return
+	 * @throws IOException
+	 */
+	public static boolean updateBlackListToServer(String appKey,List<Blacklist> blacklists)
+			throws IOException {
+		String url=IP+":"+PORT+"/blacklist/update";
+		Map<String, String> map = new HashMap<String, String>();
+		JSONArray jsonArray = new JSONArray();
+		jsonArray.addAll(blacklists);
+		map.put("blacklists", jsonArray.toJSONString());
+		map.put("appKey", appKey);
+		HttpClient client = getHttpClient();
+		HttpUriRequest post = getRequestMethod(map, url, "post");
+		HttpResponse response = client.execute(post);
+
+		if (response.getStatusLine().getStatusCode() == 200) {
+			HttpEntity entity = response.getEntity();
+			String message = EntityUtils.toString(entity, "utf-8");
+			System.out.println(message);
+			JSONObject jsonObject = (JSONObject)JSONObject.parse(message);
+			if(jsonObject.get("success").toString().equals("1"))
+				return true;
+		}
+		return false;
+	}
+	public static void main(String[] args) {
+		try {
+			List<Blacklist> blackListFromServer = getBlackListFromServer("123456");
+			blackListFromServer.get(0).setSecDate(new Timestamp(System.currentTimeMillis()));
+			blackListFromServer.get(0).setTimes((short)2);;
+			Blacklist blacklist = new Blacklist();
+			blacklist.setAppKey("123456");
+			blacklist.setFirDate(new Timestamp(System.currentTimeMillis()));
+			blacklist.setLimitedIp("127.0.0.1");
+			blacklist.setTimes((short)1);
+			blacklist.setUsername("test");
+			blackListFromServer.add(blacklist);
+			updateBlackListToServer("123456",blackListFromServer);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public static List<InterfaceControl> getInterfacesTest(){
 		List<InterfaceControl> interfaces=new ArrayList<InterfaceControl>();
 		InterfaceControl ic=new InterfaceControl();

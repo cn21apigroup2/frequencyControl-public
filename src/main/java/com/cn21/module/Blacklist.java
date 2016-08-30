@@ -1,8 +1,8 @@
 package com.cn21.module;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.codehaus.jackson.JsonParseException;
@@ -12,85 +12,109 @@ import org.codehaus.jackson.map.ObjectMapper;
 import com.alibaba.fastjson.JSONArray;
 
 /**
- * 黑名单数据
- * @author Administrator
- *
+ * Created by Steven on 2016/8/15.
  */
 public class Blacklist {
-	private int blacklistId;
-	private String username;
-	private String limitedIp;
-	private short times;
-	private Date firDate;
-	private Date secDate;
-	private Date thrDate;
-	private Date absoulteDate;
+    private int blacklistId;
+    private String appKey;
+    private String customerId;
+    private String limitedIp;
+    private short times;
+    private Timestamp firDate;
+    private Timestamp secDate;
+    private Timestamp thrDate;
+    private Timestamp absoluteDate;
+    private short state;
 
-	public int getBlacklistId() {
-		return blacklistId;
-	}
+    public int getBlacklistId() {
+        return blacklistId;
+    }
 
-	public void setBlacklistId(int blacklistId) {
-		this.blacklistId = blacklistId;
-	}
+    public void setBlacklistId(int blacklistId) {
+        this.blacklistId = blacklistId;
+    }
 
-	public String getUsername() {
-		return username;
+    public String getAppKey() {
+        return appKey;
+    }
+
+    public void setAppKey(String appKey) {
+        this.appKey = appKey;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+    
+    public String getUsername() {
+		return getCustomerId();
 	}
 
 	public void setUsername(String username) {
-		this.username = username;
+		setCustomerId(username);
 	}
 
-	public String getLimitedIp() {
-		return limitedIp;
-	}
+    public String getLimitedIp() {
+        return limitedIp;
+    }
 
-	public void setLimitedIp(String limitedIp) {
-		this.limitedIp = limitedIp;
-	}
+    public void setLimitedIp(String limitedIp) {
+        this.limitedIp = limitedIp;
+    }
 
-	public short getTimes() {
-		return times;
-	}
+    public short getTimes() {
+        return times;
+    }
 
-	public void setTimes(short times) {
-		this.times = times;
-	}
+    public void setTimes(short times) {
+        this.times = times;
+    }
 
-	public Date getFirDate() {
-		return firDate;
-	}
+    public Timestamp getFirDate() {
+        return firDate;
+    }
 
-	public void setFirDate(Date firDate) {
-		this.firDate = firDate;
-	}
+    public void setFirDate(Timestamp firDate) {
+        this.firDate = firDate;
+    }
 
-	public Date getSecDate() {
-		return secDate;
-	}
+    public Timestamp getSecDate() {
+        return secDate;
+    }
 
-	public void setSecDate(Date secDate) {
-		this.secDate = secDate;
-	}
+    public void setSecDate(Timestamp secDate) {
+        this.secDate = secDate;
+    }
 
-	public Date getThrDate() {
-		return thrDate;
-	}
+    public Timestamp getThrDate() {
+        return thrDate;
+    }
 
-	public void setThrDate(Date thrDate) {
-		this.thrDate = thrDate;
-	}
+    public void setThrDate(Timestamp thrDate) {
+        this.thrDate = thrDate;
+    }
 
-	public Date getAbsoulteDate() {
-		return absoulteDate;
-	}
+    public Timestamp getAbsoluteDate() {
+        return absoluteDate;
+    }
 
-	public void setAbsoulteDate(Date absoulteDate) {
-		this.absoulteDate = absoulteDate;
-	}
-	
-	/**
+    public void setAbsoluteDate(Timestamp absoluteDate) {
+        this.absoluteDate = absoluteDate;
+    }
+
+    public short getState() {
+        return state;
+    }
+
+    public void setState(short state) {
+        this.state = state;
+    }
+    
+    /**
 	 * 把jsonArray字符串转化出pojo
 	 * @param message
 	 * @return
@@ -115,5 +139,4 @@ public class Blacklist {
 		}
 		return result;
 	}
-
 }
