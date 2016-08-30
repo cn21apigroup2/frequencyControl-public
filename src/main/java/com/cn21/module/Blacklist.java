@@ -1,6 +1,7 @@
 package com.cn21.module;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +12,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.alibaba.fastjson.JSONArray;
 
+
+/**
+ * 黑名单类
+ */
 public class Blacklist {
     private int blacklistId;
     private String appKey;
