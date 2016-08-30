@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.cn21.data.DataAccess;
 import com.cn21.data.admin.RealApiAdmin.RealApiConfig;
+import com.cn21.data.socket.ClientThread;
 import com.cn21.frequencyControl_public.util.HttpUtil;
 import com.cn21.module.Blacklist;
 import com.cn21.module.InterfaceControl;
@@ -57,6 +58,13 @@ public class DataManager implements DataAccess {
 		blacklistAdmin=new BlacklistAdmin(HttpUtil.getBlacklistsTest());
 		realApiAdmin=new RealApiAdmin(apiLimitedAdmin,config);
 		dataSync=new DataSync(apiLimitedAdmin, blacklistAdmin);
+		try{
+			ClientThread client=new ClientThread(appKey, dataSync);
+			client.start();
+		}catch(Exception e){
+			System.out.println("connect server socket fail");
+		}
+		
 	}
 
 	public Blacklist getBlacklistByIp(String ip) {
@@ -72,6 +80,11 @@ public class DataManager implements DataAccess {
 	public void setBlacklist(Blacklist blacklist) {
 		// TODO Auto-generated method stub
 		blacklistAdmin.setBlacklist(blacklist);
+	}
+	
+	public void addBlacklist(Blacklist blacklist) {
+		// TODO Auto-generated method stub
+		blacklistAdmin.addBlacklist(blacklist);
 	}
 
 	public void removeBlacklist(Blacklist blacklist) {
@@ -137,6 +150,7 @@ public class DataManager implements DataAccess {
 	public void onEnd() {
 		dataSync.pushBlacklists();
 		realApiAdmin.flushToDb();
+		dataSync.close();
 	}
 	
 	public void setGlobalInterface(InterfaceControl interfaceControl){

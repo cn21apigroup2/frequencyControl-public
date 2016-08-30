@@ -34,6 +34,12 @@ public interface DataAccess {
 	public void setBlacklist(Blacklist blacklist);
 	
 	/**
+	 * 增加黑名单数据
+	 * @param blacklist
+	 */
+	public void addBlacklist(Blacklist blacklist);
+	
+	/**
 	 * 删除黑名单数据
 	 * @param blacklist
 	 */

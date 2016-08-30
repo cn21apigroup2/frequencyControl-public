@@ -6,22 +6,42 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.apache.commons.dbcp.BasicDataSource;
+
 public class DbUtil {
 	private String driverName;
 	private String url;
 	private String username;
 	private String password;
+	private BasicDataSource ds;
 	
-	public DbUtil(String driverName, String url, String username, String password) throws ClassNotFoundException {
+	public DbUtil(String driverName, String url, String username, String password) throws ClassNotFoundException{
+		this(driverName,url,username,password,null);
+	}
+	
+	public DbUtil(String driverName, String url, String username, String password,BasicDataSource ds) throws ClassNotFoundException {
 		this.driverName = driverName;
 		this.url = url;
 		this.username = username;
 		this.password = password;
+		if(ds==null){
+			ds=new BasicDataSource();
+			ds.setDriverClassName(driverName);
+			ds.setUrl(url);
+			ds.setInitialSize(10);
+			ds.setMaxActive(20);
+			ds.setMinIdle(5);
+		}
+		this.ds=ds;
 		Class.forName(driverName);
 	}
 	
 	public Connection getConnection() throws SQLException{
-		Connection connection=DriverManager.getConnection(url,username,password);
+		Connection connection=null;
+		if(ds!=null){
+			connection=ds.getConnection();
+		}
+		else connection=DriverManager.getConnection(url,username,password);
 		return connection;
 	}
 	

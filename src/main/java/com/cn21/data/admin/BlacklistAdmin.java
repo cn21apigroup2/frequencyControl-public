@@ -81,6 +81,15 @@ public class BlacklistAdmin {
 		
 	}
 	
+	public void addBlacklist(Blacklist blacklist) {
+		String key=getKey(blacklist);
+		rlock.lock();
+		blacklistMap.put(key, blacklist);
+		rlock.unlock();
+		//add
+		
+	}
+	
 	/**
 	 * 删除黑名单数据
 	 * @param blacklist
@@ -119,4 +128,5 @@ public class BlacklistAdmin {
 		wlock.unlock();
 		return lists;
 	}
+	
 }

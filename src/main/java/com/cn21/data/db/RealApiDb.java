@@ -1,7 +1,10 @@
 package com.cn21.data.db;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import com.cn21.module.RealTimes;
 
@@ -23,6 +26,7 @@ public class RealApiDb {
 		if(rs.next()){
 			real=new RealTimes(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getLong(4));
 		}
+		rs.close();
 		return real;
 	}
 	
@@ -36,6 +40,22 @@ public class RealApiDb {
 		if(realTimes==null) return 0;
 		return db.execute("update real_times set times="+realTimes.getTimes()+",start_time="+realTimes.getStartTime()
 						+" where interface_id="+realTimes.getInterfaceId()+" and identity='"+realTimes.getIdentity()+"'");
+	}
+	
+	public int updataBatch(List<RealTimes> lists) throws SQLException{
+		if(lists!=null){
+			Connection conn=db.getConnection();
+			PreparedStatement ps=conn.prepareStatement("update real_times set times=?,start_time=? where interface_id=? and identity='?'");
+			for(int i=0;i<lists.size();++i){
+				RealTimes rt=lists.get(i);
+				ps.setInt(1, rt.getTimes());
+				ps.setLong(2, rt.getStartTime());
+				ps.setInt(3, rt.getInterfaceId());
+				ps.setString(4, rt.getIdentity());
+				ps.executeUpdate();
+			}
+		}
+		return lists.size();
 	}
 	
 }

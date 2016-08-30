@@ -27,7 +27,7 @@ public class RealApiTest {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void controlDb(){
 		try {
 			db.addRealTimes(rt);

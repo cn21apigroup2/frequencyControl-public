@@ -25,7 +25,7 @@ public class DataSync {
 	public DataSync(ApiLimitedAdmin ad,BlacklistAdmin bd){
 		this.ad=ad;
 		this.bd=bd;
-		timer();
+		//timer();
 	}
 	
 	/**
@@ -48,6 +48,15 @@ public class DataSync {
 	 */
 	public void pushBlacklists(){
 		executor.schedule(new PushBlacklist(), 0, TimeUnit.SECONDS);
+	}
+	
+	public void close(){
+		try {
+			executor.awaitTermination(2, TimeUnit.MINUTES);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**

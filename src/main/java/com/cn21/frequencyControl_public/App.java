@@ -3,6 +3,8 @@ package com.cn21.frequencyControl_public;
 import java.io.IOException;
 
 import com.cn21.data.admin.DataManager;
+import com.cn21.data.socket.ClientThread;
+import com.cn21.data.socket.ServerThread;
 
 /**
  * Hello world!
@@ -12,7 +14,21 @@ public class App
 {
     public static void main( String[] args )
     {
-    	System.out.println(App.class.getResource("/"));
+    	try {
+			ServerThread server=new ServerThread();
+			server.start();
+			ClientThread client=new ClientThread("111", null);
+			client.start();
+			Thread.sleep(1000);
+			server.notifyPullApiLimited("111");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	/*System.out.println(App.class.getResource("/"));
         System.out.println( "Hello World!" );
         DataManager dm=DataManager.getInstance();
         try {
@@ -29,6 +45,7 @@ public class App
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        dm.onEnd();
+        dm.onEnd();*/ 
+		
     }
 }

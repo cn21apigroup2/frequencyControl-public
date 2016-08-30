@@ -1,6 +1,8 @@
 package com.cn21.data.admin;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.cn21.data.cache.Cache;
@@ -78,24 +80,6 @@ public class RealApiAdmin {
 		return addTimes(interface_id,ip);
 	}
 	
-	/**
-	 * 将cache中的数据写进db
-	 */
-	public void flushToDb(){
-		Map<RKey,RValue> map=cache.getData();
-		if(map!=null){
-			for(RKey key:map.keySet()){
-				RValue value=map.get(key);
-				try {
-					db.updateRealTimes(new RealTimes(key.interfaceId,key.identity,value.times,value.startTimes));
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-	
 	private int addTimes(int interface_id,String key){
 		RKey rk=new RKey(key, interface_id);
 		RValue rv=cache.get(rk);
@@ -136,6 +120,33 @@ public class RealApiAdmin {
 		}
 	}
 	
+	/**
+	 * 将cache中的数据写进db
+	 */
+	public void flushToDb(){
+		Map<RKey,RValue> map=cache.getData();
+		if(map!=null){
+			List<RealTimes> lists=new ArrayList<RealTimes>();
+			for(RKey key:map.keySet()){
+				RValue value=map.get(key);
+				lists.add(getRealTimes(key,value));
+			}
+			try {
+				db.updataBatch(lists);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private RealTimes getRealTimes(RKey key, RValue value) {
+		// TODO Auto-generated method stub
+		if(key!=null&&value!=null)
+			return new RealTimes(key.interfaceId,key.identity,value.times,value.startTimes);
+		return null;
+	}
+
 	public static class RealApiConfig{
 		int maxSize=20000000;
 		
