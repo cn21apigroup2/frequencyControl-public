@@ -8,6 +8,11 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 
+ * @author Administrator
+ *
+ */
 public class ServerThread extends Thread{
 	public static int PORT=8800;
 	
@@ -25,10 +30,20 @@ public class ServerThread extends Thread{
 			HandleThread handler=sockets.get(appKey);
 			if(handler!=null){
 				if(!handler.isClosed())
-					handler.notify(MessageRule.APILIMITED_UPDATE);
+					handler.notifySendMessage(MessageRule.APILIMITED_UPDATE);
 				else sockets.remove(appKey);
 			}
 		}
+	}
+	
+	/**
+	 * 判断app是否存在
+	 * @param appKey
+	 * @return
+	 */
+	public boolean invalidApp(String appKey,String appSecret){
+		if(appKey==null||appSecret==null)  return false;
+		return true;
 	}
 	
 	@Override
@@ -37,13 +52,21 @@ public class ServerThread extends Thread{
 			Socket socket=null;
 			try {
 				socket = serverSocket.accept();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				System.out.println("accept exception");
+				e.printStackTrace();
+				break;
+			}
+			try{
 				BufferedReader in=new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				//获取appkey
 				String appKey=in.readLine();
+				String appSecret=in.readLine();
 				// appkey  invalid
-				
+				if(!invalidApp(appKey,appSecret))  continue;
 				//使用handleThread 管理连接
-				if(appKey!=null){
+				if(appKey!=null&&appSecret!=null){
 					System.out.println("server get appkey "+appKey);
 					HandleThread handler=new HandleThread(socket);
 					sockets.put(appKey, handler);
@@ -52,9 +75,10 @@ public class ServerThread extends Thread{
 					System.out.println("server get appkey null");
 					socket.close();
 				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
+			}catch(IOException e){
+				System.out.println("accept exception");
 				e.printStackTrace();
+				break;
 			}
 		}
 		System.out.println("server run end");
@@ -63,6 +87,16 @@ public class ServerThread extends Thread{
 	public void stopRunning(){
 		running=false;
 		this.interrupt();
+		for(String key:sockets.keySet()){
+			HandleThread item=sockets.get(key);
+			item.stopRunning();
+		}
+		/*try {
+			join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 	}
 	
 	public void close(){

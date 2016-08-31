@@ -46,6 +46,7 @@ public class DataManager implements DataAccess {
 	 * @throws ClassNotFoundException
 	 */
 	public void init(String appKey,String appSecret,RealApiConfig config) throws IOException, ClassNotFoundException{
+		if(appKey==null||appSecret==null) throw new IllegalArgumentException("appKey and appSecret cannot be null");
 		this.appKey=appKey;
 		this.appSecret=appSecret;
 		Map<String,List<InterfaceControl>> map=HttpUtil.getFromServer(appKey);
@@ -59,7 +60,7 @@ public class DataManager implements DataAccess {
 		realApiAdmin=new RealApiAdmin(apiLimitedAdmin,config);
 		dataSync=new DataSync(apiLimitedAdmin, blacklistAdmin);
 		try{
-			ClientThread client=new ClientThread(appKey, dataSync);
+			ClientThread client=new ClientThread(appKey,appSecret, dataSync);
 			client.start();
 		}catch(Exception e){
 			System.out.println("connect server socket fail");

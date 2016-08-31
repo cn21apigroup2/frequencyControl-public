@@ -25,7 +25,7 @@ public class DataSync {
 	public DataSync(ApiLimitedAdmin ad,BlacklistAdmin bd){
 		this.ad=ad;
 		this.bd=bd;
-		//timer();
+		timer();
 	}
 	
 	/**
@@ -33,7 +33,8 @@ public class DataSync {
 	 */
 	private void timer(){
 		//更新api频次数据，每2hours
-		executor.scheduleAtFixedRate(new PullApiLimited(), 2, 2, TimeUnit.HOURS);
+		//executor.scheduleAtFixedRate(new PullApiLimited(), 2, 2, TimeUnit.HOURS);
+		executor.scheduleAtFixedRate(new PushBlacklist(), 1, 1, TimeUnit.HOURS);
 	}
 	
 	/**
@@ -93,7 +94,12 @@ public class DataSync {
 		public void run() {
 			List<Blacklist> lists=bd.pushData();
 			//update
-			
+			try {
+				HttpUtil.updateBlackListToServer(DataManager.getInstance().getAppKey(),lists);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 	}

@@ -3,6 +3,7 @@ package com.cn21.frequencyControl_public;
 import java.io.IOException;
 
 import com.cn21.data.admin.DataManager;
+import com.cn21.data.socket.Client;
 import com.cn21.data.socket.ClientThread;
 import com.cn21.data.socket.ServerThread;
 
@@ -17,10 +18,14 @@ public class App
     	try {
 			ServerThread server=new ServerThread();
 			server.start();
-			ClientThread client=new ClientThread("111", null);
+			Client client=new Client("111","222", null);
 			client.start();
-			Thread.sleep(1000);
-			server.notifyPullApiLimited("111");
+			Thread.sleep(10000);
+			//server.notifyPullApiLimited("111");
+			server.close();
+			Thread.sleep(40000);
+			server=new ServerThread();
+			server.start();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
