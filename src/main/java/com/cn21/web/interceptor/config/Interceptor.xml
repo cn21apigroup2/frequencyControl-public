@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interceptors>
+	<interceptor class="com.cn21.web.interceptor.OverallSituationLimiteInterceptor" />
+	<interceptor class="com.cn21.web.interceptor.IsConfigInterceptor" />
+	<interceptor class="com.cn21.web.interceptor.BlacklistCheckInterceptor" />
+	<interceptor class="com.cn21.web.interceptor.OverclockingInterceptor" />
+</interceptors>
