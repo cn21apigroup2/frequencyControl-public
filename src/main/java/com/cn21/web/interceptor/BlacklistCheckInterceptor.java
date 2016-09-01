@@ -15,9 +15,9 @@ public class BlacklistCheckInterceptor extends AbstractInterceptorHandler {
 	public void intercept(HttpServletRequest request, HttpServletResponse response, AccessInfo accessInfo) {
 		DataManager dataManager=DataManager.getInstance();
 		if(Integer.parseInt((String) request.getAttribute(ACCESSTOKEN))==CONTINUE){
-			//username为空则通过ip判断
+			//username涓虹┖鍒欓�氳繃ip鍒ゆ柇
 			if(accessInfo.getUsername()==null||accessInfo.getUsername().equals("")){
-				//判断是否输入IP，否则通过REQUEST获取IP
+				//鍒ゆ柇鏄惁杈撳叆IP锛屽惁鍒欓�氳繃REQUEST鑾峰彇IP
 				if(accessInfo.getIpAddress()==null||accessInfo.getIpAddress().equals("")){		
 					String ip=getRequestIp(request);
 					accessInfo.setIpAddress(ip);
@@ -64,7 +64,7 @@ public class BlacklistCheckInterceptor extends AbstractInterceptorHandler {
 	}
 
 	private boolean getToken(Blacklist blacklist){
-		if(blacklist.getAbsoulteDate()!=null){
+		if(blacklist.getAbsoluteDate()!=null){
 			return false;
 		}
 		if(blacklist.getThrDate()!=null){

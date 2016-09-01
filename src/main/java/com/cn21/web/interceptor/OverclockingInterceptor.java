@@ -14,9 +14,9 @@ public class OverclockingInterceptor extends AbstractInterceptorHandler{
 	@Override
 	public void intercept(HttpServletRequest request, HttpServletResponse response, AccessInfo accessInfo) {
 		DataManager dataManager = DataManager.getInstance();
-		//ÊÇ·ñÐèÒªÀ¹½Ø
+		//ï¿½Ç·ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½
 		if(Integer.parseInt((String) request.getAttribute(ACCESSTOKEN))==CONTINUE){
-			//ÓÃ»§ÃûÊÇ·ñÎª¿Õ
+			//ï¿½Ã»ï¿½ï¿½ï¿½ï¿½Ç·ï¿½Îªï¿½ï¿½
 			int interfaceId = dataManager.getApiInterfaceId(request.getRequestURI(),request.getParameterMap());
 			int times=0;
 			String username=accessInfo.getUsername();
@@ -58,7 +58,7 @@ public class OverclockingInterceptor extends AbstractInterceptorHandler{
 			DataManager.getInstance().addBlacklist(blacklist);
 		}else{
 			if(blacklist.getThrDate()!=null){
-				blacklist.setAbsoulteDate(new Date());
+				blacklist.setAbsoluteDate(new Date());
 			}else if(blacklist.getSecDate()!=null){
 				blacklist.setThrDate(new Date());
 			}else if(blacklist.getFirDate()!=null){

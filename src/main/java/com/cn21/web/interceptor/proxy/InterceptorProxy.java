@@ -24,20 +24,20 @@ import com.cn21.web.util.InterceptorXMLParse;
  */
 
 /**
- * À¹½ØÆ÷µÄ¶¯Ì¬´úÀí£¬¶¯Ì¬¼ÓÔØÀ¹½ØÆ÷
+ * æ‹¦æˆªå™¨çš„åŠ¨æ€ä»£ç†ï¼ŒåŠ¨æ€åŠ è½½æ‹¦æˆªå™¨
  * @author steven
  *
  */
 public class InterceptorProxy implements MethodInterceptor {
 	
 	/**
-	 * ±»´úÀíÄ¿±ê
+	 * è¢«ä»£ç†ç›®æ ‡
 	 */
     private Object target;
     
     
     /**
-     * ´´½¨´úÀíºóµÄÀà
+     * åˆ›å»ºä»£ç†åçš„ç±»
      * @param target
      * @return
      */
@@ -57,7 +57,7 @@ public class InterceptorProxy implements MethodInterceptor {
         return result;
     }
     /**
-     * ±»´úÀí·½·¨Ç°Ö´ĞĞµÄ·½·¨
+     * è¢«ä»£ç†æ–¹æ³•å‰æ‰§è¡Œçš„æ–¹æ³•
      * @param request
      * @param response
      * @param accessInfo

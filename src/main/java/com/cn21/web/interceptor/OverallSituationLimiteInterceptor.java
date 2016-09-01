@@ -24,7 +24,7 @@ public class OverallSituationLimiteInterceptor extends AbstractInterceptorHandle
 		}
 		if(!limiter.tryAcquire()){
 			request.setAttribute(ACCESSTOKEN,REFUSED);
-			request.setAttribute("errorMsg","·şÎñÆ÷·ÃÎÊÁ¿¹ı´ó,ÇëÉÔºó·ÃÎÊ");
+			request.setAttribute("errorMsg","æœåŠ¡å™¨è®¿é—®é‡è¿‡å¤§,è¯·ç¨åè®¿é—®");
 		}
 	}
 

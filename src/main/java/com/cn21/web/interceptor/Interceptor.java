@@ -7,7 +7,7 @@ import com.cn21.web.dto.AccessInfo;
 
 
 /**
- * ±»´úÀíÀ¹½ØÆ÷£¬Í¨¹ý¶Ô¸ÃÀ¹½ØÆ÷½øÐÐ´úÀíÊµÏÖÀ¹½ØÆ÷µÄ¶¯Ì¬¼ÓÔØ
+ * è¢«ä»£ç†æ‹¦æˆªå™¨ï¼Œé€šè¿‡å¯¹è¯¥æ‹¦æˆªå™¨è¿›è¡Œä»£ç†å®žçŽ°æ‹¦æˆªå™¨çš„åŠ¨æ€åŠ è½½
  * @author steven
  *
  */
