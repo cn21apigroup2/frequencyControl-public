@@ -144,10 +144,10 @@ public class ClientThread extends Thread{
 	}
 	
 	class HeartSendThread extends Thread{
-		//private long sendPeriod=300000;//5 minutes
-		private long sendPeriod=2000;//test 2s
-		//private long recvTimeout=120000;
-		private long recvTimeout=10000;  //test 10s
+		private long sendPeriod=600000;//10 minutes
+		//private long sendPeriod=2000;//test 2s
+		private long recvTimeout=60000;//1 minutes
+		//private long recvTimeout=10000;  //test 10s
 		private boolean isTimeout=true;
 		
 		@Override

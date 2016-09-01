@@ -15,24 +15,7 @@ public class App
 {
     public static void main( String[] args )
     {
-    	try {
-			ServerThread server=new ServerThread();
-			server.start();
-			Client client=new Client("111","222", null);
-			client.start();
-			Thread.sleep(10000);
-			//server.notifyPullApiLimited("111");
-			server.close();
-			Thread.sleep(40000);
-			server=new ServerThread();
-			server.start();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    	testSocket();
     	/*System.out.println(App.class.getResource("/"));
         System.out.println( "Hello World!" );
         DataManager dm=DataManager.getInstance();
@@ -52,5 +35,26 @@ public class App
 		}
         dm.onEnd();*/ 
 		
+    }
+    
+    public static void testSocket(){
+    	try {
+			ServerThread server=new ServerThread();
+			server.start();
+			Client client=new Client("111","222", null);
+			client.start();
+			Thread.sleep(10000);
+			//server.notifyPullApiLimited("111");
+			server.close();
+			Thread.sleep(40000);
+			server=new ServerThread();
+			server.start();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 }

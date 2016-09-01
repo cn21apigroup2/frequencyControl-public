@@ -94,24 +94,26 @@ public class HandleThread extends Thread{
 	}
 	
 	private class HeartThread extends Thread{
-		private int checkPeriod;
-		public int timeout;
-		private long heartRecvTime;
+		private boolean isTimeout=true;
+		public long timeout;
 		
 		private Thread checkTimeThread=new Thread(){
 			@Override
 			public void run() {
 				while(running){
-					long now=System.currentTimeMillis();
-					if(now-heartRecvTime>timeout){// timeout
-						alarmTimeout();
-					}
-					try {
-						sleep(checkPeriod);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						break;
+					synchronized(this){
+						try {
+							wait(timeout);
+							if(isTimeout){
+								alarmTimeout();
+								break;
+							}
+							isTimeout=true;
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							break;
+						}
 					}
 				}
 				
@@ -119,15 +121,13 @@ public class HandleThread extends Thread{
 		};
 		
 		public HeartThread(){
-			//this(3600000);   //1 hour
-			this(10000);  //test 10s
+			this(3600000);   //1 hour
+			//this(10000);  //test 10s
 		}
 
-		public HeartThread(int timeout){
+		public HeartThread(long timeout){
 			if(timeout<=0) throw new IllegalArgumentException("timeout cannot be -");
 			this.timeout=timeout;
-			checkPeriod=timeout/2;
-			heartRecvTime=System.currentTimeMillis();
 			checkTimeThread.start();
 		}
 
@@ -139,7 +139,10 @@ public class HandleThread extends Thread{
 					int code=Integer.valueOf(line);
 					if(code==MessageRule.HEART){
 						System.out.println("server:recv heart");
-						heartRecvTime=System.currentTimeMillis();
+						synchronized(checkTimeThread){
+							isTimeout=false;
+							checkTimeThread.notify();
+						}						
 						HandleThread.this.notifySendMessage(MessageRule.HEARTACK);
 					}else
 						handleMessage(code);
