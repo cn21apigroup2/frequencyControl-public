@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.cn21.data.DataAccess;
 import com.cn21.data.admin.RealApiAdmin.RealApiConfig;
+import com.cn21.data.socket.Client;
 import com.cn21.data.socket.ClientThread;
 import com.cn21.frequencyControl_public.util.HttpUtil;
 import com.cn21.module.Blacklist;
@@ -25,6 +26,7 @@ public class DataManager implements DataAccess {
 	private InterfaceControl globalInterface;
 	private String appKey;
 	private String appSecret;
+	private Client client;
 	
 	private DataManager(){
 		//init();
@@ -55,12 +57,12 @@ public class DataManager implements DataAccess {
 		if(gi!=null&&gi.size()>0)
 			this.globalInterface=gi.get(0);
 		else this.globalInterface=null;
-		//blacklistAdmin=new BlacklistAdmin(HttpUtil.getBlackListFromServer(appKey));
-		blacklistAdmin=new BlacklistAdmin(HttpUtil.getBlacklistsTest());
+		blacklistAdmin=new BlacklistAdmin(HttpUtil.getBlackListFromServer(appKey));
+		//blacklistAdmin=new BlacklistAdmin(HttpUtil.getBlacklistsTest());
 		realApiAdmin=new RealApiAdmin(apiLimitedAdmin,config);
 		dataSync=new DataSync(apiLimitedAdmin, blacklistAdmin);
 		try{
-			ClientThread client=new ClientThread(appKey,appSecret, dataSync);
+			client=new Client(appKey,appSecret, dataSync);
 			client.start();
 		}catch(Exception e){
 			System.out.println("connect server socket fail");
@@ -152,6 +154,7 @@ public class DataManager implements DataAccess {
 		dataSync.pushBlacklists();
 		realApiAdmin.flushToDb();
 		dataSync.close();
+		if(client!=null) client.close();
 	}
 	
 	public void setGlobalInterface(InterfaceControl interfaceControl){
