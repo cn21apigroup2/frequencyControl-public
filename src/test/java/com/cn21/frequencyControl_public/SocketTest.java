@@ -9,6 +9,11 @@ import com.cn21.data.socket.ClientThread;
 import com.cn21.data.socket.ServerThread;
 
 public class SocketTest {
+
+	@Test
+	public void client(){
+
+	}
 	
 	@Before
 	public void init(){

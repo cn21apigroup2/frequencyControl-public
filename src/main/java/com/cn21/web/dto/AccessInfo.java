@@ -1,15 +1,8 @@
 package com.cn21.web.dto;
 
 public class AccessInfo {
-	private String appKey;
 	private String username;
 	private String ipAddress;
-	public String getAppKey() {
-		return appKey;
-	}
-	public void setAppKey(String appKey) {
-		this.appKey = appKey;
-	}
 	public String getUsername() {
 		return username;
 	}

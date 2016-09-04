@@ -14,17 +14,17 @@ public class OverclockingInterceptor extends AbstractInterceptorHandler{
 	@Override
 	public void intercept(HttpServletRequest request, HttpServletResponse response, AccessInfo accessInfo) {
 		DataManager dataManager = DataManager.getInstance();
-		//�Ƿ���Ҫ����
-		if(Integer.parseInt((String) request.getAttribute(ACCESSTOKEN))==CONTINUE){
-			//�û����Ƿ�Ϊ��
+		if(Integer.parseInt(request.getAttribute(ACCESSTOKEN).toString())==CONTINUE){
 			int interfaceId = dataManager.getApiInterfaceId(request.getRequestURI(),request.getParameterMap());
 			int times=0;
 			String username=accessInfo.getUsername();
 			String ip = accessInfo.getIpAddress();
 			if(username==null||username.equals("")){
 				times=dataManager.getCurrentTimesByIp(interfaceId, ip);
+				dataManager.addTimesByIp(interfaceId, ip);
 			}else{
 				times=dataManager.getCurrentTimesByUsername(interfaceId, username);
+				dataManager.addTimesByUsername(interfaceId, username);
 			}
 			if(times>dataManager.getLimitedTimesById(interfaceId)){
 				updateBlacklist(username,ip);

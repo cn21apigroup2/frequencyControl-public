@@ -63,18 +63,31 @@ public class RequestDispatchFilter implements Filter {
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest)request;
-		HttpServletResponse resp =(HttpServletResponse)response; 
+		HttpServletResponse resp =(HttpServletResponse)response;
+		req.setAttribute("errorMsg",null);
 		req.setAttribute("accessToken",0);
+		AccessInfo accessInfo=getAccessInfo(req);
+		if(accessInfo==null){
+			accessInfo = new AccessInfo();
+		}
+		if(accessInfo.getIpAddress()==null){
+			accessInfo.setIpAddress(getRequestIp(req));
+		}
 		Interceptor interceptor = new Interceptor();
 		InterceptorProxy interceptorProxy = new InterceptorProxy();
 		Interceptor agentClass = (Interceptor)interceptorProxy.createProxy(interceptor);
-		agentClass.intercept(req,resp,getAccessInfo(req));
+		agentClass.intercept(req,resp,accessInfo);
 		if(Integer.parseInt(req.getAttribute("accessToken").toString())!=-1){
 			chain.doFilter(request, response);
 		}else{
-			req.getRequestDispatcher("/error.flt").forward(request, response);
+			if(request.getAttribute("errorMsg")!=null){
+				System.out.println(request.getAttribute("errorMsg"));
+			}else {
+				System.out.println("拒绝访问");
+			}
+			//req.getRequestDispatcher("/error.flt").forward(request, response);
 		}
-		
+
 	}
 
 	/**
@@ -92,15 +105,16 @@ public class RequestDispatchFilter implements Filter {
 			e1.printStackTrace();
 		}
 		int times =DataManager.getInstance().getGlobalLimited().getTimeoutOfSeconds();
+		int frequency=DataManager.getInstance().getGlobalLimited().getFrequency();
 		try {
-			if(times>0){
-				OverallSituationToken.getInstance().createLimiter(times);	
+			if(frequency>0){
+				OverallSituationToken.getInstance().createLimiter(frequency/times);
 			}else{
 				OverallSituationToken.getInstance().createLimiter(Integer.MAX_VALUE);
 			}
 		} catch (LifecycleException e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 	
 	/**
@@ -171,5 +185,17 @@ public class RequestDispatchFilter implements Filter {
 			this.appSecret=fConfig.getInitParameter("appSecret");		
 		}
 	}
-	
+	private String getRequestIp(HttpServletRequest request){
+		String ip = request.getHeader("x-forwarded-for");
+		if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)){
+			ip = request.getHeader("Proxy-Client-IP");
+		}
+		if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)){
+			ip = request.getHeader("WL-Proxy-Client-IP");
+		}
+		if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)){
+			ip = request.getRemoteAddr();
+		}
+		return ip.equals("0:0:0:0:0:0:0:1")?"127.0.0.1":ip;
+	}
 }

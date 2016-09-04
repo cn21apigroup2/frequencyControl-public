@@ -17,7 +17,7 @@ import com.cn21.data.admin.DataSync;
  */
 public class ClientThread extends Thread{
 	public String IP="127.0.0.1";
-	public int PORT=8800;
+	public int PORT=8080;
 	
 	private Socket socket;
 	private BufferedReader in;
