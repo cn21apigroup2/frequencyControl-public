@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import com.cn21.data.cache.Cache;
 import com.cn21.data.cache.Cache.CacheListener;
 import com.cn21.data.cache.RealApiCacheFactory;
@@ -19,6 +22,8 @@ import com.cn21.module.RealTimes;
  *
  */
 public class RealApiAdmin {
+	private static Logger logger = LogManager.getLogger(RealApiAdmin.class);
+	
 	private Cache<RKey,RValue> cache;
 	private RealApiDb db;
 	private ApiLimitedAdmin apiLimitedAdmin;
@@ -27,6 +32,7 @@ public class RealApiAdmin {
 	public RealApiAdmin(ApiLimitedAdmin apiLimitedAdmin,RealApiConfig config) throws ClassNotFoundException{
 		if(config==null) this.config=new RealApiConfig();
 		else  this.config=config;
+		logger.info("cache，db初始化。。。");
 		cache=RealApiCacheFactory.createCache("lru", this.config.maxSize);
 		cache.setListener(listener);
 		db=new RealApiDb();
@@ -63,7 +69,6 @@ public class RealApiAdmin {
 			if((rt.getStartTime()+limitedTime)<now){
 				rt.setStartTime(now);
 				rt.setTimes(0);				
-				System.out.println("here");
 				return true;
 			}
 		}
@@ -138,6 +143,10 @@ public class RealApiAdmin {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void close(){
+		db.close();
 	}
 	
 	private RealTimes getRealTimes(RKey key, RValue value) {
