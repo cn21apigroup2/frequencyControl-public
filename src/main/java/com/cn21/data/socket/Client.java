@@ -3,10 +3,15 @@ package com.cn21.data.socket;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import com.cn21.data.admin.DataSync;
 import com.cn21.data.socket.ClientThread.DisconnectListener;
 
 public class Client {
+	private static Logger logger = LogManager.getLogger(Client.class);
+	
 	private long connectPeriod=10000;
 	private ClientThread clientThread;
 	private String appKey;
@@ -41,7 +46,7 @@ public class Client {
 				reconnectThread.join();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 	}
@@ -54,21 +59,23 @@ public class Client {
 	private DisconnectListener listener=new DisconnectListener() {
 		
 		public void disconnect() {
+			logger.info("disconnect with server");
 			clientThread.close();
 			reconnectThread=new Thread(){
 				@Override
 				public void run() {
 					while(running){
+						logger.info("try reconnect with server");
 						try {
 							clientThread=new ClientThread(appKey, appSecret, sync);
 							clientThread.connect();
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
-							System.out.println("reconnect fail "+e.getMessage());
-							e.printStackTrace();
+							logger.info("reconnect fail "+e.getMessage());
+							//e.printStackTrace();
 						}
 						if(clientThread.isConnected) {
-							System.out.println("reconnect success ");
+							logger.info("reconnect success ");
 							clientThread.start();
 							break;
 						}
@@ -76,7 +83,7 @@ public class Client {
 							Thread.sleep(connectPeriod);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							//e.printStackTrace();
 							break;
 						}
 					}			

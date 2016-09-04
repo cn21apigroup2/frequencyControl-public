@@ -8,7 +8,11 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import com.cn21.data.admin.DataSync;
+import com.cn21.data.admin.RealApiAdmin;
 
 /**
  * 
@@ -16,6 +20,8 @@ import com.cn21.data.admin.DataSync;
  *
  */
 public class ClientThread extends Thread{
+	private static Logger logger = LogManager.getLogger(ClientThread.class);
+	
 	public String IP="127.0.0.1";
 	public int PORT=8080;
 	
@@ -39,12 +45,14 @@ public class ClientThread extends Thread{
 	}
 	
 	public void connect() throws UnknownHostException, IOException{
+		logger.info("connect server with socket on "+IP+"："+PORT);
 		socket=new Socket(IP, PORT);
 		in=new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		out=new PrintWriter(socket.getOutputStream());
 		running=true;
 		heartThread=new HeartSendThread();
 		isConnected=true;
+		logger.info("connect server with socket success");
 	}
 	
 	@Override
@@ -53,7 +61,7 @@ public class ClientThread extends Thread{
 			try {
 				connect();
 			} catch(Exception e1) {
-				System.out.println("client connect error ,thread run end");
+				System.out.println("client connect error "+e1.getMessage());
 				isConnected=false;
 				if(listener!=null) listener.disconnect();
 				return;
@@ -70,7 +78,7 @@ public class ClientThread extends Thread{
 				handleMessage(Integer.valueOf(line));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 				break;
 			}catch(NumberFormatException e){
 				
@@ -83,10 +91,10 @@ public class ClientThread extends Thread{
 		
 		switch(value){
 		case MessageRule.APILIMITED_UPDATE:
+			logger.info("client recv APILIMITED_UPDATE");
 			if(sync!=null){
 				sync.pullApiLimitedData();
-				System.out.println("sync pull");
-			}System.out.println("sync pull");
+			}
 			break;
 		case MessageRule.HEARTACK:
 			heartThread.recvAck();
@@ -106,24 +114,28 @@ public class ClientThread extends Thread{
 	public void stopRunning(){
 		running=false;
 		this.interrupt();
-		heartThread.interrupt();
-		try {
-			heartThread.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(heartThread!=null){
+			heartThread.interrupt();		
+			try {
+				heartThread.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			}
 		}
 	}
 	
 	public void close(){
 		if(running) stopRunning();
 		try {
-			socket.close();
-			in.close();
-			out.close();
+			if(socket!=null&&in!=null&&out!=null){
+				socket.close();
+				in.close();
+				out.close();
+			}			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 
@@ -170,7 +182,7 @@ public class ClientThread extends Thread{
 						sleep(sendPeriod);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						//e.printStackTrace();
 						break;
 					}  
 				}
@@ -187,7 +199,7 @@ public class ClientThread extends Thread{
 				out.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		
