@@ -16,8 +16,8 @@ public class App
     public static void main( String[] args )
     {
     	//System.out.println(DataManager.class.getResource("/").getPath());
-    	//testSocket();
-    	System.out.println(App.class.getResource("/"));
+    	testSocket();
+    	/*System.out.println(App.class.getResource("/"));
         System.out.println( "Hello World!" );
         DataManager dm=DataManager.getInstance();
         try {
@@ -34,7 +34,7 @@ public class App
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        dm.onEnd();		
+        dm.onEnd();		*/
     }
     
     public static void testSocket(){

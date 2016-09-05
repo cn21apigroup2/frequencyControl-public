@@ -14,6 +14,8 @@ import com.alibaba.fastjson.JSONArray;
  * 黑名单类
  */
 public class Blacklist {
+    public static int NEXTID=1;
+
     private int blacklistId;
     private String appKey;
     private String customerId;
@@ -24,6 +26,10 @@ public class Blacklist {
     private Date thrDate;
     private Date absoluteDate;
     private short state;
+
+    public Blacklist(){
+        //blacklistId=NEXTID++;
+    }
 
     public int getBlacklistId() {
         return blacklistId;
@@ -112,7 +118,24 @@ public class Blacklist {
     public void setState(short state) {
         this.state = state;
     }
-    
+
+
+    @Override
+    public String toString() {
+        return "Blacklist{" +
+                "blacklistId=" + blacklistId +
+                ", appKey='" + appKey + '\'' +
+                ", customerId='" + customerId + '\'' +
+                ", limitedIp='" + limitedIp + '\'' +
+                ", times=" + times +
+                ", firDate=" + firDate +
+                ", secDate=" + secDate +
+                ", thrDate=" + thrDate +
+                ", absoluteDate=" + absoluteDate +
+                ", state=" + state +
+                '}';
+    }
+
     /**
 	 * 把jsonArray字符串转化出pojo
 	 * @param message

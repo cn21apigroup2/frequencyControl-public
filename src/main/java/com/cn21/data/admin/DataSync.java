@@ -40,7 +40,7 @@ public class DataSync {
 		//更新api频次数据，每2hours
 		//executor.scheduleAtFixedRate(new PullApiLimited(), 2, 2, TimeUnit.HOURS);
 		logger.info("启动定时：每1hour push 黑名单");
-		executor.scheduleAtFixedRate(new PushBlacklist(), 1, 1, TimeUnit.HOURS);
+		executor.scheduleAtFixedRate(new PushBlacklist(), 60, 60, TimeUnit.MINUTES);
 	}
 	
 	/**
@@ -88,7 +88,7 @@ public class DataSync {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
-				logger.info("pull api limit data from server fail");
+				logger.error("pull api limit data from server fail");
 			}
 		}
 		
@@ -105,8 +105,10 @@ public class DataSync {
 			List<Blacklist> lists=bd.pushData();
 			//update
 			try {
-				logger.error("push blacklists to server");
-				HttpUtil.updateBlackListToServer(DataManager.getInstance().getAppKey(),lists);
+				logger.info("push blacklists to server");
+				logger.debug(lists);
+				HttpUtil.updateBlackListToServer(DataManager.getInstance().getAppKey(), lists);
+				bd.refreshData(HttpUtil.getBlackListFromServer(DataManager.getInstance().getAppKey()));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();

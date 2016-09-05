@@ -114,8 +114,18 @@ public class BlacklistAdmin {
 	}
 	
 	public void refreshData(List<Blacklist> lists){
+		if(lists==null) return;
 		wlock.lock();
-		init(lists);
+		for(String key:blacklistMap.keySet()){
+			for(int i=0;i<lists.size();++i){
+				Blacklist item=lists.get(i);
+				if(key.equals(item.getUsername())||key.equals(item.getLimitedIp())){
+					Blacklist b=blacklistMap.get(key);
+					b.setBlacklistId(item.getBlacklistId());
+					break;
+				}
+			}
+		}
 		wlock.unlock();
 	}
 	

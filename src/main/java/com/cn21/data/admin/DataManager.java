@@ -29,7 +29,7 @@ public class DataManager implements DataAccess {
 	private static Logger logger = LogManager.getLogger(DataManager.class);
 	static{
 		Properties pro=new Properties();
-		pro.put("log4j.rootLogger", "debug,stdout");
+		pro.put("log4j.rootLogger", "INFO,stdout");
 		pro.put("log4j.appender.stdout", "org.apache.log4j.ConsoleAppender");
 		pro.put("log4j.appender.stdout.Target", "System.out");
 		pro.put("log4j.appender.stdout.layout", "org.apache.log4j.PatternLayout");
@@ -71,16 +71,18 @@ public class DataManager implements DataAccess {
 		this.appKey=appKey;
 		this.appSecret=appSecret;
 		logger.info("从服务器中获取数据。。。");
-		//Map<String,List<InterfaceControl>> map=HttpUtil.getFromServer(appKey);
-		Map<String,List<InterfaceControl>> map=HttpUtil.getInterfacesTest();
+		Map<String,List<InterfaceControl>> map=HttpUtil.getFromServer(appKey);
+		//Map<String,List<InterfaceControl>> map=HttpUtil.getInterfacesTest();
 		apiLimitedAdmin=new ApiLimitedAdmin(map.get("interfaces"));
 		List<InterfaceControl> gi=map.get("overallControl");
 		if(gi!=null&&gi.size()>0)
 			this.globalInterface=gi.get(0);
 		else this.globalInterface=null;
+		List<Blacklist> blacklists=HttpUtil.getBlackListFromServer(appKey);
+		blacklistAdmin=new BlacklistAdmin(blacklists);
+		//blacklistAdmin=new BlacklistAdmin(HttpUtil.getBlacklistsTest());
 		logger.info("从服务器中获取数据完成");
-		//blacklistAdmin=new BlacklistAdmin(HttpUtil.getBlackListFromServer(appKey));
-		blacklistAdmin=new BlacklistAdmin(HttpUtil.getBlacklistsTest());
+		//setBlacklistNextId(blacklists);
 		realApiAdmin=new RealApiAdmin(apiLimitedAdmin,config);
 		dataSync=new DataSync(apiLimitedAdmin, blacklistAdmin);
 		try{
@@ -90,6 +92,17 @@ public class DataManager implements DataAccess {
 			System.out.println("connect server socket fail");
 		}
 		logger.info("初始化datamanager成功");
+	}
+
+	private void setBlacklistNextId(List<Blacklist> lists){
+		if(lists==null) return ;
+		int max=0;
+		for(int i=0;i<lists.size();++i){
+			int id=lists.get(i).getBlacklistId();
+			if(id>max)
+				max=id;
+		}
+		Blacklist.NEXTID=max+1;
 	}
 
 	private void initLog4j() {

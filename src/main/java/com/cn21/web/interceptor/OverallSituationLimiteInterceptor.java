@@ -15,6 +15,7 @@ public class OverallSituationLimiteInterceptor extends AbstractInterceptorHandle
 	
 	@Override
 	public void intercept(HttpServletRequest request, HttpServletResponse response, AccessInfo accessInfo) {
+		System.out.println("全局控制开始");
 		RateLimiter limiter=null;
 		try {
 			limiter=OverallSituationToken.getInstance().getLimiter();
@@ -25,6 +26,7 @@ public class OverallSituationLimiteInterceptor extends AbstractInterceptorHandle
 			request.setAttribute(ACCESSTOKEN,REFUSED);
 			request.setAttribute("errorMsg","服务器访问量过大,请稍后访问");
 		}
+		System.out.println("全局控制结束");
 	}
 
 	@Override

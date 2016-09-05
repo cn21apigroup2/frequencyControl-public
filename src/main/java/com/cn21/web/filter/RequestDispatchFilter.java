@@ -26,6 +26,8 @@ import com.cn21.web.dto.AccessInfo;
 import com.cn21.web.interceptor.Interceptor;
 import com.cn21.web.interceptor.config.OverallSituationToken;
 import com.cn21.web.interceptor.proxy.InterceptorProxy;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 /**
  * Servlet Filter implementation class RequestDispatchFilter
@@ -67,12 +69,14 @@ public class RequestDispatchFilter implements Filter {
 		req.setAttribute("errorMsg",null);
 		req.setAttribute("accessToken",0);
 		AccessInfo accessInfo=getAccessInfo(req);
+		System.out.println(accessInfo==null);
 		if(accessInfo==null){
 			accessInfo = new AccessInfo();
 		}
 		if(accessInfo.getIpAddress()==null){
 			accessInfo.setIpAddress(getRequestIp(req));
 		}
+		System.out.println("用户名：" + accessInfo.getUsername());
 		Interceptor interceptor = new Interceptor();
 		InterceptorProxy interceptorProxy = new InterceptorProxy();
 		Interceptor agentClass = (Interceptor)interceptorProxy.createProxy(interceptor);
@@ -82,8 +86,6 @@ public class RequestDispatchFilter implements Filter {
 		}else{
 			if(request.getAttribute("errorMsg")!=null){
 				System.out.println(request.getAttribute("errorMsg"));
-			}else {
-				System.out.println("拒绝访问");
 			}
 			//req.getRequestDispatcher("/error.flt").forward(request, response);
 		}
@@ -95,6 +97,7 @@ public class RequestDispatchFilter implements Filter {
 	 * @see Filter#init(FilterConfig)
 	 */
 	public void init(FilterConfig fConfig) throws ServletException {
+		System.out.println("容器启动开始");
 		readConfig(fConfig);
 		RealApiConfig config = new RealApiConfig(initCapicity);
 		try {
@@ -115,6 +118,7 @@ public class RequestDispatchFilter implements Filter {
 		} catch (LifecycleException e) {
 			e.printStackTrace();
 		}
+		System.out.println("容器启动完成");
 	}
 	
 	/**

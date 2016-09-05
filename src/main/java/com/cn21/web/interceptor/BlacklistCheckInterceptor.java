@@ -15,14 +15,18 @@ public class BlacklistCheckInterceptor extends AbstractInterceptorHandler {
 	public void intercept(HttpServletRequest request, HttpServletResponse response, AccessInfo accessInfo) {
 		DataManager dataManager=DataManager.getInstance();
 		if(Integer.parseInt(request.getAttribute(ACCESSTOKEN).toString())==CONTINUE){
+			System.out.println("验证黑名单");
 			if(accessInfo.getUsername()==null||accessInfo.getUsername().equals("")){
+				System.out.println("通过IP验证黑名单");
 				Blacklist blacklist=dataManager.getBlacklistByIp(accessInfo.getIpAddress());
 				if(blacklist!=null){
 					if(!getToken(blacklist)){
 						request.setAttribute(ACCESSTOKEN, REFUSED);
+						request.setAttribute("errorMsg","被加入黑名单，拒绝访问");
 					}
 				}
 			}else{
+				System.out.println("通过用户名验证黑名单");
 				Blacklist blacklist=dataManager.getBlacklistByUsername(accessInfo.getUsername());
 				if(blacklist!=null){
 					if(!getToken(blacklist)){
@@ -30,7 +34,9 @@ public class BlacklistCheckInterceptor extends AbstractInterceptorHandler {
 					}
 				}
 			}
+			System.out.println("黑名单验证结束");
 		}
+
 	}
 
 	@Override
