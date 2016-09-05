@@ -54,8 +54,8 @@ public class ServerThread extends Thread{
 				socket = serverSocket.accept();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				System.out.println("accept exception");
-				e.printStackTrace();
+				System.out.println("accept exception maybe serverSocket close");
+				//e.printStackTrace();
 				break;
 			}
 			try{

@@ -1,10 +1,12 @@
 package com.cn21.web.util;
+import com.cn21.web.interceptor.config.OverallSituationToken;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,11 +19,12 @@ public class InterceptorXMLParse {
     public  List<String> parse(String fileName){
         SAXReader saxReader = new SAXReader();
         Document document = null;
-        File file = new File(getClass().getClassLoader().getResource
-    			("/").getFile().toString()+"/com/cn21/web/interceptor/config/"+fileName);
-        System.out.println(file.exists());
+        InputStream in =OverallSituationToken.class.getResourceAsStream(fileName);
+       // File file = new File();
+       // System.out.println(file.exists());
+
         try {
-            document = saxReader.read(file);
+            document = saxReader.read(in);
         }catch (DocumentException e){
             e.printStackTrace();
         }

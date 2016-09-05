@@ -58,6 +58,15 @@ public class DbUtil {
 		return statement.executeUpdate(sql);
 	}
 	
+	public void close(){
+		try {
+			ds.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public String getDriverName() {
 		return driverName;
 	}

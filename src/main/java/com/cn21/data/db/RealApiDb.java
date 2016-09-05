@@ -58,4 +58,8 @@ public class RealApiDb {
 		return lists.size();
 	}
 	
+	public void close(){
+		db.close();
+	}
+	
 }

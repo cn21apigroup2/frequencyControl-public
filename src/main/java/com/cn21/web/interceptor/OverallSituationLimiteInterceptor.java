@@ -18,7 +18,6 @@ public class OverallSituationLimiteInterceptor extends AbstractInterceptorHandle
 		RateLimiter limiter=null;
 		try {
 			limiter=OverallSituationToken.getInstance().getLimiter();
-		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

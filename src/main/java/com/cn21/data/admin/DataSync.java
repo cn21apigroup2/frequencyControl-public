@@ -8,6 +8,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import com.cn21.frequencyControl_public.util.HttpUtil;
 import com.cn21.module.Blacklist;
 import com.cn21.module.InterfaceControl;
@@ -18,6 +21,8 @@ import com.cn21.module.InterfaceControl;
  *
  */
 public class DataSync {
+	private static Logger logger = LogManager.getLogger(DataSync.class);
+	
 	private static ScheduledExecutorService executor=Executors.newScheduledThreadPool(10);
 	private ApiLimitedAdmin ad;
 	private BlacklistAdmin bd;
@@ -34,6 +39,7 @@ public class DataSync {
 	private void timer(){
 		//更新api频次数据，每2hours
 		//executor.scheduleAtFixedRate(new PullApiLimited(), 2, 2, TimeUnit.HOURS);
+		logger.info("启动定时：每1hour push 黑名单");
 		executor.scheduleAtFixedRate(new PushBlacklist(), 1, 1, TimeUnit.HOURS);
 	}
 	
@@ -41,6 +47,7 @@ public class DataSync {
 	 * 拉取api频次控制数据
 	 */
 	public void pullApiLimitedData(){
+		logger.info("启动线程，拉取api频次数据");
 		executor.schedule(new PullApiLimited(), 0, TimeUnit.SECONDS);
 	}
 	
