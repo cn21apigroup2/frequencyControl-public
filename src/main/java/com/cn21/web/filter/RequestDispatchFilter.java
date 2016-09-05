@@ -76,7 +76,6 @@ public class RequestDispatchFilter implements Filter {
 		if(accessInfo.getIpAddress()==null){
 			accessInfo.setIpAddress(getRequestIp(req));
 		}
-		System.out.println("用户名：" + accessInfo.getUsername());
 		Interceptor interceptor = new Interceptor();
 		InterceptorProxy interceptorProxy = new InterceptorProxy();
 		Interceptor agentClass = (Interceptor)interceptorProxy.createProxy(interceptor);
