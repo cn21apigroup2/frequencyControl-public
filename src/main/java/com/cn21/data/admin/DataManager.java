@@ -1,6 +1,7 @@
 package com.cn21.data.admin;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,7 @@ import com.cn21.module.InterfaceControl;
  *
  */
 public class DataManager implements DataAccess {
-	private static Logger logger = LogManager.getLogger(DataManager.class);
+	private static Logger logger = Logger.getLogger(DataManager.class);
 	
 	private ApiLimitedAdmin apiLimitedAdmin;
 	private BlacklistAdmin blacklistAdmin;
@@ -81,7 +82,7 @@ public class DataManager implements DataAccess {
 	}
 
 	private void initLog4j() {
-		String filePath=DataManager.class.getResource("/")+"log4j.properties";
+		InputStream filePath=DataManager.class.getResourceAsStream("/log4j.properties");
 		PropertyConfigurator.configure(filePath);
 	}
 
