@@ -129,9 +129,10 @@ public class HttpUtil {
 	 */
 	public static Map<String,List<InterfaceControl>> getFromServer(String appKey)
 			throws IOException {
-		String url=IP+":"+PORT+"/FrequencyControl/interface/pull/"+appKey;
+		String url=IP+":"+PORT+"/interface/pull";
 		HashMap<String, List<InterfaceControl>> result = new HashMap<String,List<InterfaceControl>>();
 		Map<String, String> map = new HashMap<String, String>();
+		map.put("appKey", appKey);
 		InterfaceControl overallControl=null;
 		List<InterfaceControl> interfaces=new ArrayList<InterfaceControl>();
 		HttpClient client = getHttpClient();
@@ -141,14 +142,26 @@ public class HttpUtil {
 		if (response.getStatusLine().getStatusCode() == 200) {
 			HttpEntity entity = response.getEntity();
 			String message = EntityUtils.toString(entity, "utf-8");
-			overallControl = InterfaceControl.parseOverall(message);
-			interfaces = InterfaceControl.parseCommon(message);
-			List<InterfaceControl> oc = new ArrayList<InterfaceControl>();
-			oc.add(overallControl);
-			result.put("overallControl", oc);
-			result.put("interfaces", interfaces);
+			if (isSuccess(message)) {
+				overallControl = InterfaceControl.parseOverall(message);
+				interfaces = InterfaceControl.parseCommon(message);
+				List<InterfaceControl> oc = new ArrayList<InterfaceControl>();
+				oc.add(overallControl);
+				result.put("overallControl", oc);
+				result.put("interfaces", interfaces);
+			}
+			else {
+				result.put("overallControl", null);
+				result.put("interfaces", null);
+			}
 		}
 		return result;
+	}
+
+	private static boolean isSuccess(String message) {
+		JSONObject parse = (JSONObject)JSONObject.parse(message);
+		if("1".equals(parse.get("success").toString()))return true;
+		return false;
 	}
 
 	/**
@@ -170,7 +183,10 @@ public class HttpUtil {
 		if (response.getStatusLine().getStatusCode() == 200) {
 			HttpEntity entity = response.getEntity();
 			String message = EntityUtils.toString(entity, "utf-8");
-			Blacklists = Blacklist.parse(message);
+			if (isSuccess(message)) {
+				JSONObject parse = (JSONObject)JSONObject.parse(message);
+				Blacklists = Blacklist.parse(parse.get("blacklists").toString());
+			}
 		}
 		return Blacklists;
 	}
@@ -197,7 +213,6 @@ public class HttpUtil {
 		if (response.getStatusLine().getStatusCode() == 200) {
 			HttpEntity entity = response.getEntity();
 			String message = EntityUtils.toString(entity, "utf-8");
-			System.out.println(message);
 			JSONObject jsonObject = (JSONObject)JSONObject.parse(message);
 			if(jsonObject.get("success").toString().equals("1"))
 				return true;
@@ -206,6 +221,7 @@ public class HttpUtil {
 	}
 	public static void main(String[] args) {
 		try {
+			Map<String, List<InterfaceControl>> fromServer = getFromServer("123456");
 			List<Blacklist> blackListFromServer = getBlackListFromServer("123456");
 			blackListFromServer.get(0).setSecDate(new Timestamp(System.currentTimeMillis()));
 			blackListFromServer.get(0).setTimes((short)2);;
