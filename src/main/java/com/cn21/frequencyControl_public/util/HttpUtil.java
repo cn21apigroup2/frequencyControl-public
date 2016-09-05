@@ -129,7 +129,7 @@ public class HttpUtil {
 	 */
 	public static Map<String,List<InterfaceControl>> getFromServer(String appKey)
 			throws IOException {
-		String url=IP+":"+PORT+"/interface/pull/"+appKey;
+		String url=IP+":"+PORT+"/interface/pull";
 		HashMap<String, List<InterfaceControl>> result = new HashMap<String,List<InterfaceControl>>();
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("appKey", appKey);
