@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -24,6 +26,15 @@ import com.cn21.module.InterfaceControl;
  */
 public class DataManager implements DataAccess {
 	private static Logger logger = LogManager.getLogger(DataManager.class);
+	static{
+		Properties pro=new Properties();
+		pro.put("log4j.rootLogger", "debug,stdout");
+		pro.put("log4j.appender.stdout", "org.apache.log4j.ConsoleAppender");
+		pro.put("log4j.appender.stdout.Target", "System.out");
+		pro.put("log4j.appender.stdout.layout", "org.apache.log4j.PatternLayout");
+		pro.put("log4j.appender.stdout.layout.ConversionPattern", "[%-5p] %d{yyyy-MM-dd HH:mm:ss,SSS} method:%l%n%m%n");
+		PropertyConfigurator.configure(pro);
+	}
 	
 	private ApiLimitedAdmin apiLimitedAdmin;
 	private BlacklistAdmin blacklistAdmin;
@@ -55,20 +66,20 @@ public class DataManager implements DataAccess {
 	 */
 	public void init(String appKey,String appSecret,RealApiConfig config) throws IOException, ClassNotFoundException{
 		logger.info("初始化数据...");
-		initLog4j();
 		if(appKey==null||appSecret==null) throw new IllegalArgumentException("appKey and appSecret cannot be null");
 		this.appKey=appKey;
 		this.appSecret=appSecret;
 		logger.info("从服务器中获取数据。。。");
-		Map<String,List<InterfaceControl>> map=HttpUtil.getFromServer(appKey);
+		//Map<String,List<InterfaceControl>> map=HttpUtil.getFromServer(appKey);
+		Map<String,List<InterfaceControl>> map=HttpUtil.getInterfacesTest();
 		apiLimitedAdmin=new ApiLimitedAdmin(map.get("interfaces"));
 		List<InterfaceControl> gi=map.get("overallControl");
 		if(gi!=null&&gi.size()>0)
 			this.globalInterface=gi.get(0);
 		else this.globalInterface=null;
-		blacklistAdmin=new BlacklistAdmin(HttpUtil.getBlackListFromServer(appKey));
 		logger.info("从服务器中获取数据完成");
-		//blacklistAdmin=new BlacklistAdmin(HttpUtil.getBlacklistsTest());
+		//blacklistAdmin=new BlacklistAdmin(HttpUtil.getBlackListFromServer(appKey));
+		blacklistAdmin=new BlacklistAdmin(HttpUtil.getBlacklistsTest());
 		realApiAdmin=new RealApiAdmin(apiLimitedAdmin,config);
 		dataSync=new DataSync(apiLimitedAdmin, blacklistAdmin);
 		try{
@@ -78,11 +89,6 @@ public class DataManager implements DataAccess {
 			System.out.println("connect server socket fail");
 		}
 		logger.info("初始化datamanager成功");
-	}
-
-	private void initLog4j() {
-		String filePath=DataManager.class.getResource("/")+"log4j.properties";
-		PropertyConfigurator.configure(filePath);
 	}
 
 	public Blacklist getBlacklistByIp(String ip) {
@@ -168,12 +174,13 @@ public class DataManager implements DataAccess {
 	}
 
 	public void onEnd() {
-		logger.info("onEnd: close and release...");
-		dataSync.pushBlacklists();
-		realApiAdmin.flushToDb();
-		realApiAdmin.close();
-		dataSync.close();
+		logger.info("onEnd: save and release...");
+		if(dataSync!=null) dataSync.pushBlacklists();
+		if(realApiAdmin!=null) realApiAdmin.flushToDb();
+		if(realApiAdmin!=null) realApiAdmin.close();
+		if(dataSync!=null) dataSync.close();
 		if(client!=null) client.close();
+		logger.info("onEnd: save and release completed...");
 	}
 	
 	public void setGlobalInterface(InterfaceControl interfaceControl){

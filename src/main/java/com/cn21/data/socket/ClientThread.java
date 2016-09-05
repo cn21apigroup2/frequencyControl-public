@@ -7,9 +7,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Properties;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import com.cn21.data.admin.DataSync;
 import com.cn21.data.admin.RealApiAdmin;
@@ -23,7 +25,7 @@ public class ClientThread extends Thread{
 	private static Logger logger = LogManager.getLogger(ClientThread.class);
 	
 	public String IP="127.0.0.1";
-	public int PORT=8080;
+	public int PORT=8800;
 	
 	private Socket socket;
 	private BufferedReader in;
@@ -166,6 +168,7 @@ public class ClientThread extends Thread{
 		public void run() {
 			isTimeout=true;
 			while(running){
+				System.out.println("client:send heart");
 				out.println(MessageRule.HEART);
 				out.flush();
 				synchronized(this){
@@ -187,20 +190,7 @@ public class ClientThread extends Thread{
 					}  
 				}
 			}
-			System.out.println("client: heartthread run end");
-		}
-		
-		public void close(){
-			running=false;
-			ClientThread.this.interrupt();
-			try {
-				socket.close();
-				in.close();
-				out.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
-			}
+			//System.out.println("client: heartthread run end");
 		}
 		
 		public void recvAck(){

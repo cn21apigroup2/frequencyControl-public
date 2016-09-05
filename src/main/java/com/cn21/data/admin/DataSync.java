@@ -60,10 +60,11 @@ public class DataSync {
 	
 	public void close(){
 		try {
-			executor.awaitTermination(2, TimeUnit.MINUTES);
+			executor.awaitTermination(30, TimeUnit.SECONDS);
+			executor.shutdown();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	
@@ -77,6 +78,7 @@ public class DataSync {
 		public void run() {
 			//get
 			try {
+				logger.info("pull api limit data from server");
 				Map<String,List<InterfaceControl>> map=HttpUtil.getFromServer(DataManager.getInstance().getAppKey());
 				List<InterfaceControl> list=map.get("interfaces");
 				ad.refreshData(list);
@@ -85,7 +87,8 @@ public class DataSync {
 					DataManager.getInstance().setGlobalInterface(gi.get(0));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
+				logger.info("pull api limit data from server fail");
 			}
 		}
 		
@@ -102,10 +105,12 @@ public class DataSync {
 			List<Blacklist> lists=bd.pushData();
 			//update
 			try {
+				logger.error("push blacklists to server");
 				HttpUtil.updateBlackListToServer(DataManager.getInstance().getAppKey(),lists);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
+				logger.error("push blacklists to server fail");
 			}
 		}
 		

@@ -10,7 +10,7 @@ import com.cn21.module.RealTimes;
 
 public class RealApiDb {
 	private static final String driver="org.sqlite.JDBC";
-	private static final String url="jdbc:sqlite:"+RealApiDb.class.getResource("")+"realapi.db";
+	private static final String url="jdbc:sqlite:"+RealApiDb.class.getResource("/")+"realapi.db";
 	private static final String username="";
 	private static final String password="";
 	
@@ -18,6 +18,22 @@ public class RealApiDb {
 	
 	public RealApiDb() throws ClassNotFoundException{
 		db=new DbUtil(driver,url,username,password);
+		createTable();
+	}
+	
+	private void createTable(){
+		try {
+			db.execute("create table if not exists real_times("
+					+ "interface_id INT NOT NULL, "
+					+ "identity VARCHAR(30) NOT NULL, "
+					+ "times INT NOT NULL DEFAULT 0, "
+					+ "start_time INT64 NOT NULL)");
+			System.out.println("create table "+url);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.err.println("create table fail");
+			e.printStackTrace();
+		}
 	}
 	
 	public RealTimes getRealTimes(int interfaceId,String identity) throws SQLException{
@@ -45,7 +61,7 @@ public class RealApiDb {
 	public int updataBatch(List<RealTimes> lists) throws SQLException{
 		if(lists!=null){
 			Connection conn=db.getConnection();
-			PreparedStatement ps=conn.prepareStatement("update real_times set times=?,start_time=? where interface_id=? and identity='?'");
+			PreparedStatement ps=conn.prepareStatement("update real_times set times=?,start_time=? where interface_id=? and identity=?");
 			for(int i=0;i<lists.size();++i){
 				RealTimes rt=lists.get(i);
 				ps.setInt(1, rt.getTimes());

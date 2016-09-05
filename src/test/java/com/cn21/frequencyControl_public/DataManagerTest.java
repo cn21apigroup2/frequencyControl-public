@@ -9,9 +9,9 @@ import org.junit.Test;
 public class DataManagerTest {
     @Test
     public  void dataManagerTtest() throws  Exception{
-        DataManager dataManager = DataManager.getInstance();
+       /* DataManager dataManager = DataManager.getInstance();
         dataManager.init("AAAAA","AAAAAA");
 
-        System.out.println(dataManager.getGlobalLimited().getTimeoutOfSeconds());
+        System.out.println(dataManager.getGlobalLimited().getTimeoutOfSeconds());*/
     }
 }

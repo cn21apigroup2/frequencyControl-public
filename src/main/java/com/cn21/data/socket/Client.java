@@ -12,7 +12,7 @@ import com.cn21.data.socket.ClientThread.DisconnectListener;
 public class Client {
 	private static Logger logger = LogManager.getLogger(Client.class);
 	
-	private long connectPeriod=10000;
+	private long connectPeriod=600000;
 	private ClientThread clientThread;
 	private String appKey;
 	private String appSecret;
@@ -60,7 +60,7 @@ public class Client {
 		
 		public void disconnect() {
 			logger.info("disconnect with server");
-			clientThread.close();
+			//clientThread.close();
 			reconnectThread=new Thread(){
 				@Override
 				public void run() {

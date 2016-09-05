@@ -53,10 +53,15 @@ public class RealApiAdmin {
 		int times=0;
 		RealTimes rt=getRealTimes(interface_id,key);
 		//System.err.println(rt.getTimes());
-		checkExpire(rt);
+		if(checkExpire(rt))
+			updateToCache(rt);
 		if(rt!=null) times=rt.getTimes();
 		//System.err.println(rt.getTimes());
 		return times;
+	}
+
+	private void updateToCache(RealTimes rt) {
+		cache.set(new RKey(rt.getIdentity(),rt.getInterfaceId()), new RValue(rt.getTimes(),rt.getStartTime()));
 	}
 
 	private boolean checkExpire(RealTimes rt) {

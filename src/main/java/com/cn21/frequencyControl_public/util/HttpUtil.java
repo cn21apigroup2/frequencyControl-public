@@ -222,22 +222,26 @@ public class HttpUtil {
 			e.printStackTrace();
 		}
 	}
-	public static List<InterfaceControl> getInterfacesTest(){
-		List<InterfaceControl> interfaces=new ArrayList<InterfaceControl>();
+	public static Map<String,List<InterfaceControl>> getInterfacesTest(){
+		Map<String,List<InterfaceControl>> interfaces=new HashMap<String,List<InterfaceControl>>();
 		InterfaceControl ic=new InterfaceControl();
 		ic.setApi_name("/user/add");
 		ic.setInterface_id(1);
 		ic.setFrequency(100);
 		ic.setTimeout(1);
 		ic.setUnit('h');
-		interfaces.add(ic);
+		List<InterfaceControl> o= new ArrayList<InterfaceControl>();
+		o.add(ic);
+		interfaces.put("interfaces",o);
+		List<InterfaceControl> g= new ArrayList<InterfaceControl>();
 		ic=new InterfaceControl();
 		ic.setApi_name("/user/list");
 		ic.setInterface_id(2);
 		ic.setFrequency(100);
 		ic.setTimeout(100);
 		ic.setUnit('s');
-		interfaces.add(ic);
+		g.add(ic);
+		interfaces.put("ovarallControl",g);
 		return interfaces;
 	}
 	
