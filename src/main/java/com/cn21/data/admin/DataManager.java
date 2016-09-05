@@ -1,6 +1,7 @@
 package com.cn21.data.admin;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +90,11 @@ public class DataManager implements DataAccess {
 			System.out.println("connect server socket fail");
 		}
 		logger.info("初始化datamanager成功");
+	}
+
+	private void initLog4j() {
+		InputStream filePath=DataManager.class.getResourceAsStream("/log4j.properties");
+		PropertyConfigurator.configure(filePath);
 	}
 
 	public Blacklist getBlacklistByIp(String ip) {
